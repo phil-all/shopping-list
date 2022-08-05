@@ -28,13 +28,30 @@ git clone git@gitlab.com:phil-all/boilerplate-symfonyreact.git <your_project_nam
 
 #### Symfony API
 
-From apps/back directory:
+##### initialisation
+
+All API bash command will be made from apps/back directory.
+
+Install composer packages:
 
 ```bash
 composer install
 ```
 
-API is accessible from 127.0.0.1:8700
+Generate SSL keys for JWT authentication:
+
+```bash
+php bin/console lexik:jwt:generate-keypair
+```
+
+Create a .env.local file, and move in **JWT_PASSPHRASE** from .env file:
+
+##### about
+
+| url                    | description               |
+| ---------------------- | ------------------------- |
+| 127.0.0.1:8700/docs    | API swagger documentation |
+| 127.0.0.1:8700/api/... | API endpoints             |
 
 #### React fornt app
 
