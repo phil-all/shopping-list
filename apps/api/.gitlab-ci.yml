@@ -1,0 +1,38 @@
+image: jakzal/phpqa:php8.1
+
+before_script:
+    - cd apps/api
+    - composer install
+
+cache:
+    paths:
+        - vendor/
+
+stages:
+    - Security
+    - CodingStandards
+    - Tests
+
+security-checker:
+    stage: Security
+    script:
+        - local-php-security-checker composer.lock
+    allow_failure: false
+
+phpcs:
+    stage: CodingStandards
+    script:
+        - phpcs -v --standard=PSR12 --ignore=./src/kernel.php ./src
+    allow_failure: true
+
+phpstan:
+    stage: CodingStandards
+    script:
+        - phpstan analyse ./src
+    allow_failure: true
+
+unit-tests:
+    stage: Tests
+    script:
+        - bin/phpunit/tests/Unit
+    allow_failure: true

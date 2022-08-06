@@ -1,0 +1,11 @@
+stages:
+    - apps
+
+API:
+    stage: apps
+    trigger:
+        include: apps/api/.gitlab-ci.yml
+        strategy: depend
+    only:
+        changes:
+            - apps/api/**/*
