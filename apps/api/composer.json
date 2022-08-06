@@ -33,6 +33,7 @@
         "symfony/yaml": "6.1.*"
     },
     "require-dev": {
+        "dama/doctrine-test-bundle": "^7.1",
         "doctrine/doctrine-fixtures-bundle": "^3.4",
         "phpmd/phpmd": "^2.12",
         "phpro/grumphp": "^1.13",
