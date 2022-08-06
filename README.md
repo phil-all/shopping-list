@@ -6,6 +6,10 @@
 
 * * *
 
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/20133568815940b4b8fb23ea31f04f6e)](https://www.codacy.com/gl/phil-all/shopping-list/dashboard?utm_source=gitlab.com&utm_medium=referral&utm_content=phil-all/shopping-list&utm_campaign=Badge_Grade)
+
+* * *
+
 ## :tada: Getting started
 
 ### Prerequisites
