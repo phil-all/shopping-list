@@ -22,6 +22,7 @@
         "symfony/expression-language": "6.1.*",
         "symfony/flex": "^2",
         "symfony/framework-bundle": "6.1.*",
+        "symfony/http-client": "6.1.*",
         "symfony/property-access": "6.1.*",
         "symfony/property-info": "6.1.*",
         "symfony/proxy-manager-bridge": "6.1.*",
@@ -35,6 +36,7 @@
     "require-dev": {
         "dama/doctrine-test-bundle": "^7.1",
         "doctrine/doctrine-fixtures-bundle": "^3.4",
+        "justinrainbow/json-schema": "^5.2",
         "phpmd/phpmd": "^2.12",
         "phpro/grumphp": "^1.13",
         "phpstan/phpstan": "^1.8",
