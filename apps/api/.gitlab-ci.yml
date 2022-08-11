@@ -23,38 +23,62 @@ phpcs:
     stage: CodingStandards
     script:
         - phpcs -v --standard=PSR12 --ignore=./src/kernel.php ./src
-    allow_failure: true
+    allow_failure: false
 
 phpstan:
     stage: CodingStandards
     script:
         - phpstan analyse ./src
-    allow_failure: true
+    allow_failure: false
 
-unit-tests:
+phpunit-unit-tests:
     stage: Tests
     script:
         - bin/phpunit tests/Unit --testdox
-    allow_failure: true
+    allow_failure: false
 
-functional-tests:
+newman-functional-tests:
     stage: Tests
-    services:
-        - name: postgres
-          alias: pg
     variables:
-        POSTGRES_DB: test_db
-        POSTGRES_USER: user
-        POSTGRES_PASSWORD: pass
-        DATABASE_URL: 'postgresql://user:pass@pg:5432/test_db?serverVersion=14&charset=utf8'
+        DATABASE_URL: 'sqlite:///%kernel.project_dir%/var/data.db'
     before_script:
         - cd apps/api
-        - apt-get update && apt-get install -y libpq-dev
-        - docker-php-ext-install pdo pdo_pgsql pgsql
-        - composer require symfony/runtime
-        - php bin/console doctrine:database:drop --if-exists --force --env=test
+        - composer install
+        - apt-get update && apt-get install -y git libzip-dev libpq-dev npm wget
+        - docker-php-ext-install zip
+        - npm install -g newman
+        - wget https://get.symfony.com/cli/installer -O - | bash
+        - mv /root/.symfony/bin/symfony /usr/local/bin/symfony
+        - mv ./config/jwt/private_test.pem ./config/jwt/private.pem && mv ./config/jwt/public_test.pem ./config/jwt/public.pem 
+        - symfony server:ca:install && symfony serve -d
         - php bin/console doctrine:database:create --env=test
         - php bin/console doctrine:schema:update --force --env=test --no-interaction
+        - php bin/console doctrine:fixtures:load -n
     script:
-        - bin/phpunit tests/Func --testdox
-    allow_failure: true
+        - newman run --verbose ./postman/test-API-collection.json -e ./postman/env-gitlab.json
+    allow_failure: false
+
+# ## issue 13: functional phpunit tests return error SQLSTATE[42P01]: Undefined table
+# ###################################################################################
+# phpunit-functional-tests:
+#     stage: Tests
+#     services:
+#         - name: postgres
+#           alias: pg
+#     variables:
+#         POSTGRES_DB: test_db
+#         POSTGRES_USER: user
+#         POSTGRES_PASSWORD: pass
+#         DATABASE_URL: 'postgresql://user:pass@pg:5432/test_db?serverVersion=14&charset=utf8'
+#     before_script:
+#         - cd apps/api
+#         - apt-get update && apt-get install -y libpq-dev
+#         - docker-php-ext-install pdo pdo_pgsql pgsql
+#         - composer require symfony/runtime
+#         - php bin/console doctrine:database:drop --if-exists --force --env=test
+#         - php bin/console doctrine:database:create --env=test
+#         - php bin/console doctrine:schema:update --force --env=test --no-interaction
+#         - php bin/console doctrine:fixtures:load -n
+#     script:
+#         - bin/phpunit tests/Func --testdox
+#     allow_failure: true

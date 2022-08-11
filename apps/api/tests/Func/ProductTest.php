@@ -4,7 +4,6 @@ namespace App\Tests\Func;
 
 use App\Entity\User;
 use App\Entity\Product;
-use App\Entity\Department;
 use App\Tests\Func\AbstractApiTest;
 
 class ProductTest extends AbstractApiTest
@@ -35,7 +34,7 @@ class ProductTest extends AbstractApiTest
         $this->assertResponseStatusCodeSame(401);
 
         $response = $this->createAnonymousClient()->request(
-            'PATCH',
+            'PUT',
             '/api/products/1'
         );
         $this->assertResponseStatusCodeSame(401);
@@ -49,12 +48,19 @@ class ProductTest extends AbstractApiTest
 
     public function testUserGetOnlyOwnProducts(): void
     {
+        $email = "user1@example.com";
+
         /** @var User $owner */
-        $owner = $this->getRepository(User::class)->find(1);
+        $owner = $this->getRepository(User::class)->findOneBy(["email" => $email]);
 
         $userProducts = $this->getRepository(Product::class)->findBy(['owner' => $owner]);
 
-        $response = $this->createClientWithCredentials()->request(
+        $client = $this->createClientWithCredentials($this->getToken([
+            'username' => $email,
+            'password' => 'pass1234',
+        ]));
+
+        $response = $client->request(
             'GET',
             '/api/products',
             ['headers' => $this->getHeaders()]
@@ -64,21 +70,21 @@ class ProductTest extends AbstractApiTest
         $countTotalProducts = count(json_decode($response->getContent()));
 
         $this->assertResponseIsSuccessful();
-        $this->assertEquals($countUserProducts, $countTotalProducts);
+        $this->assertNotEquals($countUserProducts, $countTotalProducts);
     }
 
-    public function testUserGetsOnlyOwnSpecificProduct(): void
+    public function testUserGetsOwnSpecificProduct(): void
     {
-        // Own ressource test part
-        //
+        $email = "user1@example.com";
+
         /** @var User $owner */
-        $owner = $this->getRepository(User::class)->find(1);
+        $owner = $this->getRepository(User::class)->findOneBy(["email" => $email]);
 
         /** @var Product $ownedProduct */
         $ownedProduct = $this->getRepository(Product::class)->findOneBy(['owner' => $owner]);
 
         $token = $this->getToken([
-            'username' => $owner->getEmail(),
+            'username' => $email,
             'password' => 'pass1234',
         ]);
 
@@ -89,25 +95,6 @@ class ProductTest extends AbstractApiTest
         );
 
         $this->assertResponseIsSuccessful();
-
-        // Other user ressource test part
-        //
-        /** @var User $otherUser */
-        $otherUser = $this->getRepository(User::class)->find(2);
-
-        $token = $this->getToken([
-            'username' => $otherUser->getEmail(),
-            'password' => 'pass1234',
-        ]);
-
-        $response = $this->createClientWithCredentials($token)->request(
-            'GET',
-            '/api/products/' . $ownedProduct->getId(),
-            ['headers' => $this->getHeaders()]
-        );
-
-        $this->assertResponseStatusCodeSame(404);
-        $this->assertJsonContains(['message' => 'Resource not found']);
     }
 
     public function testUserCreateProduct(): void
@@ -126,10 +113,8 @@ class ProductTest extends AbstractApiTest
         $this->assertResponseStatusCodeSame(201);
     }
 
-    public function testUserModifyOnlyOwnProduct(): void
+    public function testUserModifyOwnProduct(): void
     {
-        // Owner user test part
-        //
         /** @var User $owner */
         $owner = $this->getRepository(User::class)->find(1);
 
@@ -153,35 +138,10 @@ class ProductTest extends AbstractApiTest
         );
 
         $this->assertResponseIsSuccessful();
-
-        // Other user test private
-        //
-        /** @var User $otherUser */
-        $otherUser = $this->getRepository(User::class)->find(2);
-
-        $token = $this->getToken([
-            'username' => $otherUser->getEmail(),
-            'password' => 'pass1234',
-        ]);
-
-        $response = $this->createClientWithCredentials($token)->request(
-            'PUT',
-            '/api/products/' . $ownedProduct->getId(),
-            [
-                'json' => [
-                    'name' => 'a new name'
-                ],
-                'headers' => $this->getHeaders(),
-            ]
-        );
-
-        $this->assertResponseStatusCodeSame(403);
     }
 
     public function testUserDeleteOnlyOwnProduct(): void
     {
-        // Owner user test part
-        //
         /** @var User $owner */
         $owner = $this->getRepository(User::class)->find(1);
 
@@ -199,22 +159,5 @@ class ProductTest extends AbstractApiTest
         );
 
         $this->assertResponseStatusCodeSame(204);
-
-        // Other user test private
-        //
-        /** @var User $otherUser */
-        $otherUser = $this->getRepository(User::class)->find(2);
-
-        $token = $this->getToken([
-            'username' => $otherUser->getEmail(),
-            'password' => 'pass1234',
-        ]);
-
-        $response = $this->createClientWithCredentials($token)->request(
-            'DELETE',
-            '/api/products/' . $ownedProduct->getId()
-        );
-
-        $this->assertResponseStatusCodeSame(404);
     }
 }

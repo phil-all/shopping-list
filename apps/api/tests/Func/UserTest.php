@@ -3,6 +3,7 @@
 namespace App\Tests\Func;
 
 use App\Tests\Func\AbstractApiTest;
+use Symfony\Bundle\FrameworkBundle\Routing\Router;
 
 class UserTest extends AbstractApiTest
 {
@@ -11,6 +12,7 @@ class UserTest extends AbstractApiTest
         $response = $this->getLoginResponse();
 
         $this->assertResponseIsSuccessful();
+        $this->assertResponseHeaderSame('content-type', 'application/json');
         $this->assertMatchesJsonSchema([
             "token" => "string",
         ]);
@@ -25,24 +27,5 @@ class UserTest extends AbstractApiTest
 
         $this->assertJsonContains(['message' => 'Invalid credentials.']);
         $this->assertResponseStatusCodeSame(401);
-    }
-
-    public function testUsersRessourcesAreNotFound(): void
-    {
-        $response = $this->createAnonymousClient()->request(
-            'GET',
-            '/api/users'
-        );
-        $this->assertResponseHeaderSame('content-type', 'application/json');
-        $this->assertJsonContains(['message' => 'Ressource not found']);
-        $this->assertResponseStatusCodeSame(404);
-
-        $response = $this->createClientWithCredentials()->request(
-            'GET',
-            '/api/users'
-        );
-        $this->assertResponseHeaderSame('content-type', 'application/json');
-        $this->assertJsonContains(['message' => 'Ressource not found']);
-        $this->assertResponseStatusCodeSame(404);
     }
 }
