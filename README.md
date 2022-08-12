@@ -1,10 +1,6 @@
-# Boiler plate: Symfony / React
-
-**Decoupling front-end React JS with Symfony back-end API boiler plate.**
-
 ![Library logo](documentation/readme-assets/logo.png)
 
-* * *
+**Decoupling front-end React JS and Symfony back-end API.**
 
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/20133568815940b4b8fb23ea31f04f6e)](https://www.codacy.com/gl/phil-all/shopping-list/dashboard?utm_source=gitlab.com&utm_medium=referral&utm_content=phil-all/shopping-list&utm_campaign=Badge_Grade)
 
@@ -22,6 +18,10 @@ To be installed, and used, this project requires:
 -   yarn
 -   docker-compose
 
+### Global Arhitecture
+
+![Library architecture](documentation/readme-assets/architecture.png)
+
 ### Installation
 
 First, clone project repository.
@@ -30,27 +30,37 @@ First, clone project repository.
 git clone git@gitlab.com:phil-all/boilerplate-symfonyreact.git <your_project_name>
 ```
 
+#### Docker environment
+
+Launch docker root project:
+
+```bash
+docker-compose build && docker-compose up -d
+```
+
 #### Symfony API
 
 ##### initialisation
 
-All API bash command will be made from apps/back directory.
+All API bash commands will be made from api directory.
 
 Install composer packages:
 
 ```bash
+# from ./apps/api
 composer install
 ```
 
 Generate SSL keys for JWT authentication:
 
 ```bash
+# from ./apps/api
 php bin/console lexik:jwt:generate-keypair
 ```
 
 Create a .env.local file, and move in **JWT_PASSPHRASE** from .env file:
 
-##### about
+##### API endpoints
 
 | url                    | description               |
 | ---------------------- | ------------------------- |
@@ -59,14 +69,13 @@ Create a .env.local file, and move in **JWT_PASSPHRASE** from .env file:
 
 #### React fornt app
 
-From apps/front directory:
+##### Initialisation
 
-```bash
-npm install
-yarn install
-```
+All front bash commands will be made from front directory.
 
-Fornt app is accessible from 127.0.0.1:3000
+yarn is executed when node container is launch.
+
+Front app is accessible from 127.0.0.1:3000
 
 #### Database
 
@@ -78,24 +87,78 @@ Pgadmin is accessible from 127.0.0.1:8732
 | ---- | --------------- | -------- |
 | user | user@boiler.com | pass     |
 
-### Global Arhitecture
+* * *
 
-![Library architecture](documentation/readme-assets/architecture.png)
+## :wrench: Configuration
 
-### Folder stucture
+### Environments
 
-```bash
-└── boilerPlate-SymfonyReact/
-    │
-    ├── apps/
-    │   ├── back/      # Symfony API
-    │   ├── database/  # Postgres & Pgadmin
-    │   ├── front/     # React front app
-    │   └── nginx/     # Nginx
-    │
-    ├── documentation/ # your project documentation
-    │   ├── readme-assets/  # your readme assets
-    │   └── specifications/ # your project specifications
-    │
-    └── docker-compose.yaml
+#### API Symfony
+
+**Developpement**
+Set your own variables in a .env.local file, it would override .env file if needed.
+
+A makefile is provide
+
+**Test**
+As for env.local, copy your JWT_PASSPHRASE in env.test.local
+
+**Datas transaction and rollback in phpunit tests**
+To ensure each test to be isolated regarding database actions, and be performed as many times as necessary, without other test side effect, be sure dama/doctrine-test-bundle is well configured.
+
+```yaml
+# ./config/packages/test/dama_doctrine_test
+dama_doctrine_test:
+    enable_static_connection: true
+    enable_static_meta_data_cache: true
+    enable_static_query_cache: true
 ```
+
+```xml
+<!-- ./phpunit.xml.dist -->
+
+...
+    <extensions>
+        <extension class="DAMA\DoctrineTestBundle\PHPUnit\PHPUnitExtension" />
+    </extensions>
+</phpunit>
+```
+
+**Demo users**
+
+| username          | password |
+| ----------------- | -------- |
+| user1@example.com | pass1234 |
+| user2@example.com | pass1234 |
+
+* * *
+
+## Gitlab-CI
+
+For now, only APi is in gitlab-ci pipeline.
+
+![gitlab-ci](documentation/readme-assets/gitlab-ci.png)
+
+* * *
+
+## :white_check_mark: Tests
+
+### API tests
+
+**Unit tests**
+
+Made with phpunit.
+More details soon...
+
+**Functionnal tests**
+
+Made with newman/postman.
+More details soon...
+
+* * *
+
+## Makefile commands
+
+### API makefile
+
+Make commands will be alvailable soon...
