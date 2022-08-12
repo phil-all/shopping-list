@@ -1,7 +1,7 @@
 version: '3'
 services:
     web:
-        container_name: boiler-nginx
+        container_name: shopping-list-nginx
         build:
             context: ./apps/nginx
             dockerfile: Dockerfile
@@ -9,14 +9,14 @@ services:
             - ./apps/nginx/default.conf:/etc/nginx/conf.d/default.conf
             - ./apps/api:/var/www
         ports:
-            - 8700:80
+            - 8100:80
         restart: always
         depends_on:
             - php
         networks:
             - php-net
     php:
-        container_name: boiler-php
+        container_name: shopping-list-php
         build:
             context: ./apps/api
             dockerfile: Dockerfile
@@ -32,7 +32,7 @@ services:
             - data-net
 
     dbpostgres:
-        container_name: boiler-postgres
+        container_name: shopping-list-postgres
         build:
             context: ./apps/database/postgres
             dockerfile: Dockerfile
@@ -40,7 +40,7 @@ services:
             - pg_data:/var/lib/postgresql/data
         restart: always
         environment:
-            POSTGRES_DB: boiler_db
+            #POSTGRES_DB: shopping-list_db
             POSTGRES_USER: user
             POSTGRES_PASSWORD: pass
         ports:
@@ -50,7 +50,7 @@ services:
         
 
     pgadmin:
-        container_name: boiler-pgadmin
+        container_name: shopping-list-pgadmin
         build:
             context: ./apps/database/pgadmin
             dockerfile: Dockerfile
@@ -59,16 +59,16 @@ services:
         links:
             - "dbpostgres:pgsql-server"
         environment:
-            PGADMIN_DEFAULT_EMAIL: user@boiler.com
+            PGADMIN_DEFAULT_EMAIL: user@shoppinglist.com
             PGADMIN_DEFAULT_PASSWORD: pass
             PGADMIN_LISTEN_PORT: 80
         restart: always
         ports:
-            - "8732:80"
+            - "8132:80"
         tty: true
 
     front:
-      container_name: boiler-front
+      container_name: shopping-list-front
       build:
         context: apps/front
         dockerfile: Dockerfile
