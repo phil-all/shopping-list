@@ -1,4 +1,4 @@
-import axios from '../api/axios';
+import axios from '../Services/axios';
 import { useNavigate } from 'react-router-dom';
 import { FaRegUserCircle } from 'react-icons/fa';
 import { useRef, useState, useEffect } from 'react';
