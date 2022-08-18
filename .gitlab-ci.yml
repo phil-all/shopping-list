@@ -6,6 +6,6 @@ API:
     trigger:
         include: apps/api/.gitlab-ci.yml
         strategy: depend
-    only:
-        changes:
+    rules:
+        - changes:
             - apps/api/**/*
