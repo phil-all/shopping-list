@@ -86,19 +86,25 @@ const Products = () => {
   }
 
   return (
-    <div className="App">
+    <main className='d-flex flex-column'>
+      <section>
       <Header title="Mes produits" />
       <AddProduct
         newProduct={newProduct}
         setNewProduct={setNewProduct}
         handleSubmit={handleSubmit}
       />
-      <ProductsContent
-        products={products}
-        handleDelete={handleDelete}
-      />
+      </section>
+      <section className='d-flex flex-grow-1'>
+      <div className='container'>
+        <ProductsContent
+          products={products}
+          handleDelete={handleDelete}
+        />
+      </div>
+      </section>
       <Footer />
-    </div>
+    </main>
   );
 }
 

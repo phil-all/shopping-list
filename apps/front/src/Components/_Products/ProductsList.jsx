@@ -2,7 +2,7 @@ import ProductListItem from './ProductListItem';
 
 const ProductsList = ({ products, handleCheck, handleDelete }) => {
     return (
-        <ul>
+        <ul className='list-group my-3'>
             {products.map((product) => (
                 <ProductListItem
                     key={product.id}

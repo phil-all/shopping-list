@@ -2,29 +2,39 @@ import { useRef } from 'react';
 import { FaPlus } from 'react-icons/fa';
 
 const AddProduct = ({ newProduct, setNewProduct, handleSubmit }) => {
-    const inputRef = useRef();
+  const inputRef = useRef();
 
-    return (
-        <form className='addForm' onSubmit={handleSubmit}>
+  return (
+    <form className='add-product' onSubmit={handleSubmit}>
+      <div className='container'>
+        <div className='row'>
+          <div class="col-10 col-md-11">
             <input
-                autoFocus
-                ref={inputRef}
-                id='addProduct'
-                type='text'
-                placeholder='nouveau produit'
-                required
-                value={newProduct}
-                onChange={(e) => setNewProduct(e.target.value)}
+              className='form-control'
+              autoFocus
+              ref={inputRef}
+              id='addProduct'
+              type='text'
+              placeholder='nouveau produit'
+              required
+              value={newProduct}
+              onChange={(e) => setNewProduct(e.target.value)}
             />
-            <button
+          </div>
+          <div class="col-1 my-auto d-flex justify-content-center">
+              <button
+                className='btn'
                 type='submit'
                 aria-label='nouveau produit'
                 onClick={() => inputRef.current.focus()}
-            >
+              >
                 <FaPlus />
-            </button>
-        </form>
-    )
+              </button>
+          </div>
+        </div>
+      </div>
+    </form>
+  )
 }
 
 export default AddProduct

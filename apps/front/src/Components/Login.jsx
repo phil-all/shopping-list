@@ -33,7 +33,9 @@ const Login = () => {
     try {
       const response = await axios.post(
         LOGIN_URL,
-        JSON.stringify({ username, password }), { headers: { 'content-type': 'application/json' } });
+        JSON.stringify({ username, password }),
+        { headers: { 'content-type': 'application/json' } }
+      );
       const accessToken = response?.data.token
       setCookie('token', accessToken);
       setUsername('');
@@ -47,34 +49,48 @@ const Login = () => {
 
   return (
     <CookiesProvider>
-      <section>
-        <h1>Login</h1>
-        <p><FaRegUserCircle /></p>
-        <p>{errMsg}</p>
-        <form onSubmit={handleSubmit}>
-          <div>
-            <input
-              placeholder='Votre email'
-              type="text"
-              id="username"
-              ref={userRef}
-              onChange={(e) => setUsername(e.target.value)}
-              value={username}
-              required
-            />
+      <main>
+        <section className='container'>
+          <div className='d-flex justify-content-center vh-100 align-items-center'>
+            <form
+              onSubmit={handleSubmit}
+              className='p-3 mt-3'
+            >
+              <p className='svg-login text-center'><FaRegUserCircle /></p>
+              <p className='text-center text-danger'>{errMsg}</p>
+              <div className='row g-3'>
+                <input
+                  className='form-control'
+                  placeholder='Votre email'
+                  type="text"
+                  id="username"
+                  ref={userRef}
+                  onChange={(e) => setUsername(e.target.value)}
+                  value={username}
+                  required
+                />
+              </div>
+              <br />
+              <div className='row g-3'>
+                <input
+                  className='form-control'
+                  placeholder='Votre mot de passe'
+                  type="password"
+                  id="password"
+                  onChange={(e) => setPassword(e.target.value)}
+                  value={password}
+                  required
+                />
+              </div>
+              <div className='d-grid mx-auto'>
+                <button className='btn btn-primary mt-5'>
+                  Login
+                </button>
+              </div>
+            </form>
           </div>
-          <div>
-            <input
-              placeholder='Votre mot de passe'
-              type="password"
-              id="password"
-              onChange={(e) => setPassword(e.target.value)}
-              value={password}
-              required
-            /></div>
-          <button>Login</button>
-        </form>
-      </section>
+        </section>
+      </main>
     </CookiesProvider>
   )
 }
