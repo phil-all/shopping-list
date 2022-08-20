@@ -6,9 +6,32 @@
 
 * * *
 
-## :tada: Getting started
+## Table of content
 
-### Prerequisites
+1.  [:tada: Getting started](#tada:Gettingstarted)
+    -   1.1. [Prerequisites](#Prerequisites)
+    -   1.2. [Global Arhitecture](#GlobalArhitecture)
+    -   1.3. [Installation](#Installation)
+
+2.  [:wrench: Configuration](#wrench:Configuration)
+    -   2.1. [Environments](#Environments)
+
+3.  [:construction_worker: Gitlab-CI](#construction_worker:Gitlab-CI)
+
+4.  [:white_check_mark: Tests](#white_check_mark:Tests)
+    -   4.1. [API tests](#APItests)
+    -   4.2. [Front tests](#Fronttests)
+
+5.  [:hammer: Makefile commands](#Makefilecommands)
+    -   5.1. [API makefile](#APImakefile)
+
+6.  [:sparkles: Features](#sparkles:Features)
+
+* * *
+
+## 1. :tada: Getting started
+
+### 1.1. Prerequisites
 
 To be installed, and used, this project requires:
 
@@ -18,11 +41,11 @@ To be installed, and used, this project requires:
 -   yarn
 -   docker-compose
 
-### Global Arhitecture
+### 1.2. Global Arhitecture
 
 ![Library architecture](documentation/readme-assets/architecture.png)
 
-### Installation
+### 1.3. Installation
 
 First, clone project repository.
 
@@ -30,7 +53,7 @@ First, clone project repository.
 git clone git@gitlab.com:phil-all/boilerplate-symfonyreact.git <your_project_name>
 ```
 
-#### Docker environment
+#### 1.3.1. Docker environment
 
 Launch docker root project:
 
@@ -38,7 +61,7 @@ Launch docker root project:
 docker-compose build && docker-compose up -d
 ```
 
-#### Symfony API
+#### 1.3.2. Symfony API
 
 ##### initialisation
 
@@ -67,7 +90,7 @@ Create a .env.local file, and move in **JWT_PASSPHRASE** from .env file:
 | 127.0.0.1:8700/docs    | API swagger documentation |
 | 127.0.0.1:8700/api/... | API endpoints             |
 
-#### React fornt app
+#### 1.3.3. React fornt app
 
 ##### Initialisation
 
@@ -77,7 +100,7 @@ yarn is executed when node container is launch.
 
 Front app is accessible from 127.0.0.1:3000
 
-#### Database
+#### 1.3.4. Database
 
 Database port is 5432.
 
@@ -89,11 +112,11 @@ Pgadmin is accessible from 127.0.0.1:8732
 
 * * *
 
-## :wrench: Configuration
+## 2. :wrench: Configuration
 
-### Environments
+### 2.1. Environments
 
-#### API Symfony
+#### 2.1.1. API Symfony
 
 **Developpement**
 Set your own variables in a .env.local file, it would override .env file if needed.
@@ -124,7 +147,7 @@ dama_doctrine_test:
 </phpunit>
 ```
 
-**Demo users**
+#### 2.1.2. Demo users
 
 | username          | password |
 | ----------------- | -------- |
@@ -133,32 +156,68 @@ dama_doctrine_test:
 
 * * *
 
-## Gitlab-CI
+## 3. :construction_worker: Gitlab-CI
 
-For now, only APi is in gitlab-ci pipeline.
+Two pipelines are available:
+
+-   one for API
 
 ![gitlab-ci](documentation/readme-assets/gitlab-ci.png)
 
+-   one for Front app
+
 * * *
 
-## :white_check_mark: Tests
+## 4. :white_check_mark: Tests
 
-### API tests
+### 4.1. API tests
 
 **Unit tests**
 
 Made with phpunit.
-More details soon...
+
+```bash
+# from ./apps/api/
+bin/phpunit tests/Unit --testdox
+```
 
 **Functionnal tests**
 
 Made with newman/postman.
-More details soon...
+
+```bash
+newman run --verbose ./postman/test-API-collection.json -e ./postman/env-gitlab.json
+```
+
+### 4.2. Front tests
+
+```bash
+# from ./ apps/front/
+yarn run test
+```
 
 * * *
 
-## Makefile commands
+## 5. :hammer: Makefile commands
 
-### API makefile
+### 5.1. API makefile
 
-Make commands will be alvailable soon...
+API make commands will be alvailable soon...
+
+* * *
+
+## 6. :sparkles: Features
+
+| user feature   | is done            |
+| -------------- | ------------------ |
+| registration   |                    |
+| authentication | :heavy_check_mark: |
+| management     |                    |
+
+| shopping-list feature | is done            |
+| --------------------- | ------------------ |
+| login                 | :heavy_check_mark: |
+| products              | :heavy_check_mark: |
+| departments           |                    |
+| shopping list         |                    |
+| search                |                    |

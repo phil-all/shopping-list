@@ -6,6 +6,17 @@ API:
     trigger:
         include: apps/api/.gitlab-ci.yml
         strategy: depend
-    only:
-        changes:
-            - apps/api/**/*
+    # rules:
+    #     - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+    #     - changes:
+    #         - apps/api/**/*
+
+Front:
+    stage: apps
+    trigger:
+        include: apps/front/.gitlab-ci.yml
+        strategy: depend
+    # rules:
+    #     - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+    #     - changes:
+    #         - apps/front/**/*

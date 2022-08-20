@@ -48,7 +48,7 @@ newman-functional-tests:
         - docker-php-ext-install zip
         - npm install -g newman
         - wget https://get.symfony.com/cli/installer -O - | bash
-        - mv /root/.symfony/bin/symfony /usr/local/bin/symfony
+        - mv /root/.symfony5/bin/symfony /usr/local/bin/symfony
         - mv ./config/jwt/private_test.pem ./config/jwt/private.pem && mv ./config/jwt/public_test.pem ./config/jwt/public.pem 
         - symfony server:ca:install && symfony serve -d
         - php bin/console doctrine:database:create --env=test
