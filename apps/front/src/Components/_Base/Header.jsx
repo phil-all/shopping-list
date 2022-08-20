@@ -7,7 +7,12 @@ const Header = ({ title }) => {
         <div className='d-flex my-auto'>
           <BsCart4 className='svg-header'/>
         </div>
-        <h1 className='my-auto'>&nbsp;{title}</h1>
+        <h1 
+          className='my-auto'
+          data-testid='title'
+        >
+          &nbsp;{title}
+        </h1>
       </div>
     </header>
   )

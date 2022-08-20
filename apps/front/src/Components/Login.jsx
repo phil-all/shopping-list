@@ -41,6 +41,7 @@ const Login = () => {
       setUsername('');
       setPassword('');
       navigateHome();
+      console.log(response.data);
     } catch (err) {
       setErrMsg('Identifiants invalides');
       if (!err?.response) setErrMsg('Server muet');
@@ -62,12 +63,13 @@ const Login = () => {
                 <input
                   className='form-control'
                   placeholder='Votre email'
-                  type="text"
-                  id="username"
+                  type='text'
+                  id='username'
                   ref={userRef}
                   onChange={(e) => setUsername(e.target.value)}
                   value={username}
                   required
+                  data-testid='email'
                 />
               </div>
               <br />
@@ -75,15 +77,19 @@ const Login = () => {
                 <input
                   className='form-control'
                   placeholder='Votre mot de passe'
-                  type="password"
-                  id="password"
+                  type='password'
+                  id='password'
                   onChange={(e) => setPassword(e.target.value)}
                   value={password}
                   required
+                  data-testid='password'
                 />
               </div>
               <div className='d-grid mx-auto'>
-                <button className='btn btn-primary mt-5'>
+                <button 
+                  className='btn btn-primary mt-5'
+                  data-testid='login'
+                >
                   Login
                 </button>
               </div>

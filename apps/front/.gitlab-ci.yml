@@ -1,0 +1,19 @@
+image: node:16-alpine3.11
+
+before_script:
+    - cd apps/front
+    - npm install
+
+cache:
+  paths:
+    - node_modules/
+
+stages:
+  - Tests
+
+react-tests:
+  stage: Tests
+  script:
+    - yarn run test
+  allow_failure: false
+

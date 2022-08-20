@@ -8,7 +8,7 @@ const AddProduct = ({ newProduct, setNewProduct, handleSubmit }) => {
     <form className='add-product' onSubmit={handleSubmit}>
       <div className='container'>
         <div className='row'>
-          <div class="col-10 col-md-11">
+          <div className='col-10 col-md-11'>
             <input
               className='form-control'
               autoFocus
@@ -19,14 +19,16 @@ const AddProduct = ({ newProduct, setNewProduct, handleSubmit }) => {
               required
               value={newProduct}
               onChange={(e) => setNewProduct(e.target.value)}
+              data-testid='new_product'
             />
           </div>
-          <div class="col-1 my-auto d-flex justify-content-center">
+          <div className='col-1 my-auto d-flex justify-content-center'>
               <button
                 className='btn'
                 type='submit'
                 aria-label='nouveau produit'
                 onClick={() => inputRef.current.focus()}
+                data-testid='add'
               >
                 <FaPlus />
               </button>

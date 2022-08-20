@@ -4,7 +4,7 @@ const ProductContent = ({ products, handleCheck, handleDelete }) => {
   const defaultListDisplay = 'La liste est vide.';
 
   return (
-    <section>
+    <section data-testid='products'>
       {products.length ? (
         <ProductsList
           products={products}
