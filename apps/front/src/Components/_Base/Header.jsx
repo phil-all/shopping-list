@@ -1,4 +1,5 @@
-import { BsCart4 } from 'react-icons/bs'
+import React from 'react';
+import { BsCart4 } from 'react-icons/bs';
 
 const Header = ({ title }) => {
   return (
@@ -15,7 +16,7 @@ const Header = ({ title }) => {
         </h1>
       </div>
     </header>
-  )
+  );
 }
 
 Header.defaultProps = {

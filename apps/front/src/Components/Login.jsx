@@ -1,8 +1,8 @@
 import axios from '../Services/axios';
 import { useNavigate } from 'react-router-dom';
 import { FaRegUserCircle } from 'react-icons/fa';
-import { useRef, useState, useEffect } from 'react';
 import { CookiesProvider, useCookies } from 'react-cookie';
+import { React, useRef, useState, useEffect } from 'react';
 
 const LOGIN_URL = '/api/login_check';
 
@@ -98,7 +98,7 @@ const Login = () => {
         </section>
       </main>
     </CookiesProvider>
-  )
+  );
 }
 
 export default Login

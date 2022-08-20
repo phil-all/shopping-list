@@ -1,3 +1,4 @@
+import React from 'react';
 import ProductsList from './ProductsList';
 
 const ProductContent = ({ products, handleCheck, handleDelete }) => {
@@ -15,7 +16,7 @@ const ProductContent = ({ products, handleCheck, handleDelete }) => {
         <p style={{ marginTop: '2rem' }}>{defaultListDisplay}</p>
       )}
     </section>
-  )
+  );
 }
 
 export default ProductContent

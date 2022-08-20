@@ -2,9 +2,9 @@ import axios from '../Services/axios';
 import Header from './_Base/Header';
 import Footer from './_Base/Footer';
 import { useCookies } from "react-cookie";
-import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import AddProduct from './_Products/AddProduct';
+import { React, useEffect, useState } from 'react';
 import ProductsContent from './_Products/ProductsContent';
 
 const Products = () => {

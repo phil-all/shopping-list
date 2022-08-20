@@ -1,3 +1,4 @@
+import React from 'react';
 import ProductListItem from './ProductListItem';
 
 const ProductsList = ({ products, handleCheck, handleDelete }) => {
@@ -12,7 +13,7 @@ const ProductsList = ({ products, handleCheck, handleDelete }) => {
                 />
             ))}
         </ul>
-    )
+    );
 }
 
 export default ProductsList

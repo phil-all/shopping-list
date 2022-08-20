@@ -1,3 +1,5 @@
+import React from 'react';
+
 const Footer = ({ length }) => {
   return (
     <footer className='p-3'>
@@ -9,7 +11,7 @@ const Footer = ({ length }) => {
         </a>
       </div>
     </footer>
-  )
+  );
 }
 
 export default Footer

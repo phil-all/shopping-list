@@ -1,3 +1,4 @@
+import React from 'react';
 import { FaTrashAlt } from 'react-icons/fa';
 
 const ProductListItem = ({ product, handleCheck, handleDelete }) => {
@@ -17,7 +18,7 @@ const ProductListItem = ({ product, handleCheck, handleDelete }) => {
         </div>
       </article>
     </li>
-  )
+  );
 }
 
 export default ProductListItem

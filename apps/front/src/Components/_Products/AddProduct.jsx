@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { React, useRef } from 'react';
 import { FaPlus } from 'react-icons/fa';
 
 const AddProduct = ({ newProduct, setNewProduct, handleSubmit }) => {
@@ -36,7 +36,7 @@ const AddProduct = ({ newProduct, setNewProduct, handleSubmit }) => {
         </div>
       </div>
     </form>
-  )
+  );
 }
 
 export default AddProduct
