@@ -3,17 +3,19 @@ import { BsCart4 } from 'react-icons/bs';
 
 const Header = ({ title }) => {
   return (
-    <header>
+    <header className='bg-primary'>
       <div className='container d-flex'>
         <div className='d-flex my-auto'>
           <BsCart4 className='svg-header'/>
         </div>
+        <div style={{width: '100%'}}>
         <h1 
-          className='my-auto'
+          className='my-auto py-4 text-center'
           data-testid='title'
         >
           &nbsp;{title}
         </h1>
+        </div>
       </div>
     </header>
   );

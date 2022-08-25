@@ -2,7 +2,6 @@ import Products from '../Components/Products';
 import "@testing-library/jest-dom/extend-expect";
 import {BrowserRouter as Router} from 'react-router-dom';
 import { render, screen, cleanup } from '@testing-library/react';
-// import { FaPlus } from 'react-icons/fa';
 
 test('should render products component', () => {
     render(
@@ -22,6 +21,9 @@ test('should render products component', () => {
   
     const addButton = screen.getByTestId('add');
     expect(addButton).toBeInTheDocument();
+
+    const departments = screen.getByLabelText('departments');
+    expect(departments).toBeInTheDocument();
 
     const productList = screen.getByTestId('products');
     expect(productList).toBeInTheDocument();

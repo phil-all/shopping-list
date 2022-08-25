@@ -1,15 +1,15 @@
 import React from 'react';
 import ProductListItem from './ProductListItem';
 
-const ProductsList = ({ products, handleCheck, handleDelete }) => {
+const ProductsList = ({ products, handleDelete, departments }) => {
     return (
         <ul className='list-group my-3'>
             {products.map((product) => (
                 <ProductListItem
                     key={product.id}
                     product={product}
-                    handleCheck={handleCheck}
                     handleDelete={handleDelete}
+                    departments={departments}
                 />
             ))}
         </ul>

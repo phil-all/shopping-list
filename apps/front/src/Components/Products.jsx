@@ -12,6 +12,9 @@ const Products = () => {
   const [products, setProducts] = useState([]);
   const [newProduct, setNewProduct] = useState('');
 
+  const [departments, setDepartments] = useState('');
+  const [newDepartment, setNewDepartment] = useState('');
+
   const config = {
     headers: {
       'Content-Type': 'application/json',
@@ -28,12 +31,20 @@ const Products = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get(
+        const responseProducts = await axios.get(
           '/api/products',
           config
         );
-        const listProducts = response.data;
+        const listProducts = responseProducts.data;
+
+        const responseDepartments = await axios.get(
+          '/api/departments',
+          config
+        );
+        const listDepartments = responseDepartments.data;
+
         setProducts(listProducts);
+        setDepartments(listDepartments);
       } catch (err) {
         if (err.request.status === 401) navigateLogin();
       }
@@ -46,11 +57,18 @@ const Products = () => {
     localStorage.setProduct('shoppinglist', JSON.stringify(newProducts));
   }
 
-  const addProduct = async (name) => {
+  const addProduct = async (productName, department) => {
     try {
+      console.log('yy');
+      console.log(department.id);
+      const postUrl = "/api/departments/" + department.id;
+      console.log(postUrl);
       const response = axios.post(
         '/api/products',
-        { 'name': name },
+        {
+          'name': productName, 
+          "department": postUrl
+        },
         config
       );
       const myNewProduct = (await response).data;
@@ -80,8 +98,10 @@ const Products = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!newProduct) return;
-    addProduct(newProduct);
+    console.log('toto');
+    //if (!newProduct || !newDepartment) return;
+    
+    addProduct(newProduct, newDepartment);
     setNewProduct('');
   }
 
@@ -93,6 +113,9 @@ const Products = () => {
         newProduct={newProduct}
         setNewProduct={setNewProduct}
         handleSubmit={handleSubmit}
+        departments={departments}
+        newDepartment={newDepartment}
+        setNewDepartment={setNewDepartment}
       />
       </section>
       <section className='d-flex flex-grow-1'>
@@ -100,6 +123,7 @@ const Products = () => {
         <ProductsContent
           products={products}
           handleDelete={handleDelete}
+          departments={departments}
         />
       </div>
       </section>
