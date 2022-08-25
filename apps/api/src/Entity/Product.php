@@ -10,7 +10,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: ProductRepository::class)]
 #[ApiResource(
-    normalizationContext: ['groups' => ['read']],
+    normalizationContext: ['groups' => ['product_read']],
     denormalizationContext: ['groups' => ['write']],
     collectionOperations: [
         'get',
@@ -27,16 +27,21 @@ class Product
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(["read"])]
+    #[Groups(["product_read"])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(["read", "write"])]
+    #[Groups(["product_read", "write"])]
     private ?string $name = null;
 
     #[ORM\ManyToOne(inversedBy: 'product', cascade: ['persist'])]
     #[ORM\JoinColumn(nullable: true)]
     private ?User $owner = null;
+
+    #[ORM\ManyToOne(inversedBy: 'products')]
+    #[ORM\JoinColumn(nullable: false)]
+    #[Groups(["product_read", "write"])]
+    private ?Department $department = null;
 
     public function getId(): ?int
     {
@@ -63,6 +68,18 @@ class Product
     public function setOwner(?User $owner): self
     {
         $this->owner = $owner;
+
+        return $this;
+    }
+
+    public function getDepartment(): ?Department
+    {
+        return $this->department;
+    }
+
+    public function setDepartment(?Department $department): self
+    {
+        $this->department = $department;
 
         return $this;
     }

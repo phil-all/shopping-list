@@ -6,7 +6,7 @@
 
 * * *
 
-## Table of content
+## 1. <a name='Tableofcontent'></a>Table of content
 
 1.  [:tada: Getting started](#tada:Gettingstarted)
     -   1.1. [Prerequisites](#Prerequisites)
@@ -23,15 +23,16 @@
     -   4.2. [Front tests](#Fronttests)
 
 5.  [:hammer: Makefile commands](#Makefilecommands)
-    -   5.1. [API makefile](#APImakefile)
+    -   5.1. [Project makefile](#ProjectMAkefile)
+    -   5.2. [API makefile](#APImakefile)
 
 6.  [:sparkles: Features](#sparkles:Features)
 
 * * *
 
-## 1. :tada: Getting started
+## 2. <a name='tada:Gettingstarted'></a>1. :tada: Getting started
 
-### 1.1. Prerequisites
+### 2.1. <a name='Prerequisites'></a>1.1. Prerequisites
 
 To be installed, and used, this project requires:
 
@@ -41,11 +42,11 @@ To be installed, and used, this project requires:
 -   yarn
 -   docker-compose
 
-### 1.2. Global Arhitecture
+### 2.2. <a name='GlobalArhitecture'></a>1.2. Global Arhitecture
 
 ![Library architecture](documentation/readme-assets/architecture.png)
 
-### 1.3. Installation
+### 2.3. <a name='Installation'></a>1.3. Installation
 
 First, clone project repository.
 
@@ -53,7 +54,7 @@ First, clone project repository.
 git clone git@gitlab.com:phil-all/boilerplate-symfonyreact.git <your_project_name>
 ```
 
-#### 1.3.1. Docker environment
+#### 2.3.1. <a name='Dockerenvironment'></a>1.3.1. Docker environment
 
 Launch docker root project:
 
@@ -61,7 +62,7 @@ Launch docker root project:
 docker-compose build && docker-compose up -d
 ```
 
-#### 1.3.2. Symfony API
+#### 2.3.2. <a name='SymfonyAPI'></a>1.3.2. Symfony API
 
 ##### initialisation
 
@@ -90,7 +91,7 @@ Create a .env.local file, and move in **JWT_PASSPHRASE** from .env file:
 | 127.0.0.1:8700/docs    | API swagger documentation |
 | 127.0.0.1:8700/api/... | API endpoints             |
 
-#### 1.3.3. React fornt app
+#### 2.3.3. <a name='Reactforntapp'></a>1.3.3. React fornt app
 
 ##### Initialisation
 
@@ -100,7 +101,7 @@ yarn is executed when node container is launch.
 
 Front app is accessible from 127.0.0.1:3000
 
-#### 1.3.4. Database
+#### 2.3.4. <a name='Database'></a>1.3.4. Database
 
 Database port is 5432.
 
@@ -112,11 +113,11 @@ Pgadmin is accessible from 127.0.0.1:8732
 
 * * *
 
-## 2. :wrench: Configuration
+## 3. <a name='wrench:Configuration'></a>2. :wrench: Configuration
 
-### 2.1. Environments
+### 3.1. <a name='Environments'></a>2.1. Environments
 
-#### 2.1.1. API Symfony
+#### 3.1.1. <a name='APISymfony'></a>2.1.1. API Symfony
 
 **Developpement**
 Set your own variables in a .env.local file, it would override .env file if needed.
@@ -147,7 +148,7 @@ dama_doctrine_test:
 </phpunit>
 ```
 
-#### 2.1.2. Demo users
+#### 3.1.2. <a name='Demousers'></a>2.1.2. Demo users
 
 | username          | password |
 | ----------------- | -------- |
@@ -156,7 +157,7 @@ dama_doctrine_test:
 
 * * *
 
-## 3. :construction_worker: Gitlab-CI
+## 4. <a name='construction_worker:Gitlab-CI'></a>3. :construction_worker: Gitlab-CI
 
 Two pipelines are available:
 
@@ -168,28 +169,29 @@ Two pipelines are available:
 
 * * *
 
-## 4. :white_check_mark: Tests
+## 5. <a name='white_check_mark:Tests'></a>4. :white_check_mark: Tests
 
-### 4.1. API tests
+### 5.1. <a name='APItests'></a>4.1. API tests
 
 **Unit tests**
 
-Made with phpunit.
+Unit tests are made with phpunit. Use make file:
 
 ```bash
 # from ./apps/api/
-bin/phpunit tests/Unit --testdox
+make unit
 ```
 
-**Functionnal tests**
+**Endpoint tests**
 
-Made with newman/postman.
+Endpoint tests are made with newman/postman. Use make file:
 
 ```bash
-newman run --verbose ./postman/test-API-collection.json -e ./postman/env-gitlab.json
+# from ./apps/api/
+make endpoint
 ```
 
-### 4.2. Front tests
+### 5.2. <a name='Fronttests'></a>4.2. Front tests
 
 ```bash
 # from ./ apps/front/
@@ -198,15 +200,88 @@ yarn run test
 
 * * *
 
-## 5. :hammer: Makefile commands
+## 6. <a name='hammer:Makefilecommands'></a>5. :hammer: Makefile commands
 
-### 5.1. API makefile
+### 6.1. <a name='Projectmakefile'></a>5.1 Project makefile
 
-API make commands will be alvailable soon...
+From root, run make follwed by:
+
+```code
+ —— Commands list 🛠️️ ————————————————————————————————————————————————————————— 
+help                           Outputs this help screen
+ —— Docker 🐳 ———————————————————————————————————————————————————————————————— 
+build                          Builds the Docker images
+up                             Start the docker hub in detached mode (no logs)
+down                           Stop the docker hub
+rm                             Remove the docker hub
+start                          Build and start the containers
+restart                        Restart the docker hub
+logs                           Show live logs
+bash                           Connect to the PHP FPM container
+pgsql                          Connect to database in postgres container
+status                         Docker hub status
+ —— Git 🔀 ——————————————————————————————————————————————————————————————————— 
+reset                          Reset last commit on local
+```
+
+### 6.2. <a name='APImakefile'></a>5.2. API makefile
+
+From api directory (./apps/api/), run make followed by:
+
+```code
+ —— Commands list 🛠️️ ————————————————————————————————————————————————————————— 
+help                           Outputs this help screen
+ —— Docker 🐳 ———————————————————————————————————————————————————————————————— 
+build                          Builds the Docker images
+up                             Start the docker hub in detached mode (no logs)
+down                           Stop the docker hub
+rm                             Remove the docker hub
+start                          Build and start the containers
+restart                        Restart the docker hub
+logs                           Show live logs
+bash                           Connect to the PHP FPM container
+pgsql                          Connect to database in postgres container
+status                         Docker hub status
+ —— Composer 🧙 —————————————————————————————————————————————————————————————— 
+update                         Update composer packages (twice to fix a doctrine deprecation)
+dump                           dump autoloading
+dump-opt                       Optimize autoloading
+no-lock                        Remove composer lock
+no-vendor                      Remove vendor
+install-vendor                 Remove and reinstall vendor
+vendor-up                      Remove, reinstall and update vendor
+ —— Symfony 🎵 ——————————————————————————————————————————————————————————————— 
+sf                             List all Symfony commands or pass the parameter "c=" to run a given command, example: make sf c=about
+cc                             Clear the cache
+user                           Make user
+entity                         Make entity
+migration                      Make migrations
+router                         Display routing
+ —— Grumphp 😡 ——————————————————————————————————————————————————————————————— 
+grum                           Run grumphp tests
+ —— Database 🛢️ —————————————————————————————————————————————————————————————— 
+drop                           Drop database
+create                         Create database
+migrate                        Migrations migrate
+drop-test                      Drop test database
+create-test                    Create test database
+migrate-test                   Migrations migrate for test
+ —— Fixtures 🤡 —————————————————————————————————————————————————————————————— 
+load                           Load fixtures
+set-db                         Reset database and seed with fixtures
+load-test                      Load test fixtures
+set-db-test                    Reset test database and seed with fixtures
+ —— Git 🔀 ——————————————————————————————————————————————————————————————————— 
+reset                          Reset last commit
+ —— Tests ✅ ————————————————————————————————————————————————————————————————— 
+phpunit                        Run all phpunit tests
+unit                           Run unit tests only
+endpoint                       Run end points tests only
+```
 
 * * *
 
-## 6. :sparkles: Features
+## 7. <a name='sparkles:Features'></a>6. :sparkles: Features
 
 | user feature   | is done            |
 | -------------- | ------------------ |
@@ -218,6 +293,6 @@ API make commands will be alvailable soon...
 | --------------------- | ------------------ |
 | login                 | :heavy_check_mark: |
 | products              | :heavy_check_mark: |
-| departments           |                    |
+| departments           | :heavy_check_mark: |
 | shopping list         |                    |
 | search                |                    |
