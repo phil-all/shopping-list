@@ -4,12 +4,16 @@ namespace App\Doctrine;
 
 use App\Entity\User;
 use App\Entity\Product;
+use App\Entity\Department;
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Component\Security\Core\Security;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Util\QueryNameGeneratorInterface;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Extension\QueryItemExtensionInterface;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Extension\QueryCollectionExtensionInterface;
 
+/**
+ * CurrentUserExtension class, used to filter owned user datas on ressources
+ */
 final class CurrentUserExtension implements QueryCollectionExtensionInterface, QueryItemExtensionInterface
 {
     private Security $security;
@@ -43,7 +47,7 @@ final class CurrentUserExtension implements QueryCollectionExtensionInterface, Q
     {
         $tempUser = $this->security->getUser();
 
-        if (Product::class !== $resourceClass || null === $tempUser) {
+        if ((Product::class !== $resourceClass && Department::class !== $resourceClass) || null === $tempUser) {
             return;
         }
 

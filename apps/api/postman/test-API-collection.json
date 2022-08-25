@@ -89,6 +89,99 @@
 			"response": []
 		},
 		{
+			"name": "user 1 should read departements",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status test\", function() {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token_user1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}api/departments",
+					"host": [
+						"{{url}}api"
+					],
+					"path": [
+						"departments"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "user 1 should read specific department",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status test\", function() {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token_user1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}api/departments/2",
+					"host": [
+						"{{url}}api"
+					],
+					"path": [
+						"departments",
+						"2"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "user 1 should create product",
 			"event": [
 				{
@@ -120,7 +213,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"name\": \"salade\"\n}",
+					"raw": "{\n    \"name\": \"salade\",\n    \"department\": \"{{url}}api/departments/1\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -299,7 +392,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"name\": \"poivron\"\n}",
+					"raw": "{\n    \"name\": \"poivron\",\n    \"department\": \"{{url}}api/departments/2\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -349,7 +442,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"name\": \"poivron\"\n}",
+					"raw": "{\n    \"name\": \"poivron\",\n    \"department\": \"{{url}}api/departments/2\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
