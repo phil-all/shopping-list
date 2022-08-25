@@ -57,11 +57,17 @@ const Login = () => {
               onSubmit={handleSubmit}
               className='p-3 mt-3'
             >
-              <p className='svg-login text-center'><FaRegUserCircle /></p>
+              <h1 className='text-primary m-0'>Shopping List</h1>
+              <p 
+                className='text-primary text-center mb-5'
+                style={{fontSize: '150px'}}
+              >
+                <FaRegUserCircle />
+              </p>
               <p className='text-center text-danger'>{errMsg}</p>
               <div className='row g-3'>
                 <input
-                  className='form-control'
+                  className='form-control text-primary bg-dark'
                   placeholder='Votre email'
                   type='text'
                   id='username'
@@ -75,9 +81,10 @@ const Login = () => {
               <br />
               <div className='row g-3'>
                 <input
-                  className='form-control'
+                  className='form-control text-primary bg-dark'
                   placeholder='Votre mot de passe'
-                  type='password'
+                  // type='password'
+                  type='text'
                   id='password'
                   onChange={(e) => setPassword(e.target.value)}
                   value={password}

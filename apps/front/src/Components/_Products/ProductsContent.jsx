@@ -1,7 +1,7 @@
 import React from 'react';
 import ProductsList from './ProductsList';
 
-const ProductContent = ({ products, handleCheck, handleDelete }) => {
+const ProductContent = ({ products, handleDelete, departments }) => {
   const defaultListDisplay = 'La liste est vide.';
 
   return (
@@ -9,8 +9,8 @@ const ProductContent = ({ products, handleCheck, handleDelete }) => {
       {products.length ? (
         <ProductsList
           products={products}
-          handleCheck={handleCheck}
           handleDelete={handleDelete}
+          departments={departments}
         />
       ) : (
         <p style={{ marginTop: '2rem' }}>{defaultListDisplay}</p>
