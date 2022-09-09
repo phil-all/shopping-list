@@ -4,14 +4,16 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\ProductRepository;
+use ApiPlatform\Core\Annotation\ApiFilter;
 use App\Controller\CreateProductController;
 use ApiPlatform\Core\Annotation\ApiResource;
 use Symfony\Component\Serializer\Annotation\Groups;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
 
 #[ORM\Entity(repositoryClass: ProductRepository::class)]
 #[ApiResource(
-    normalizationContext: ['groups' => ['product_read']],
-    denormalizationContext: ['groups' => ['write']],
+    normalizationContext: ['groups' => ['product_read', 'itemList_read']],
+    denormalizationContext: ['groups' => ['product_write']],
     collectionOperations: [
         'get',
         'post' => [
@@ -27,11 +29,11 @@ class Product
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(["product_read"])]
+    #[Groups(['product_read', 'itemList_read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(["product_read", "write"])]
+    #[Groups(['product_read', 'product_write', 'itemList_read'])]
     private ?string $name = null;
 
     #[ORM\ManyToOne(inversedBy: 'product', cascade: ['persist'])]
@@ -40,7 +42,7 @@ class Product
 
     #[ORM\ManyToOne(inversedBy: 'products')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(["product_read", "write"])]
+    #[Groups(['product_read', 'product_write', 'itemList_read'])]
     private ?Department $department = null;
 
     public function getId(): ?int

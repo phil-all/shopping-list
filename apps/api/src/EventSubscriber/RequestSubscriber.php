@@ -2,66 +2,66 @@
 
 namespace App\EventSubscriber;
 
+use Generator;
 use App\Entity\Product;
+use App\Entity\ItemList;
+use App\Entity\ShoppingList;
 use App\Service\Responder\Responder;
-use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
+/**
+ * RequestSubscriber class
+ * Used to correct some wrong 404 Http code responses due to
+ * doctrine CurentUserExtension filter on user ressources.
+ * @package App\EventSubscriber
+ */
 class RequestSubscriber implements EventSubscriberInterface
 {
     private Responder $responder;
 
     private RequestStack $requestStack;
 
-    private ManagerRegistry $managerRegistry;
-
     private TokenStorageInterface $tokenStorage;
-
-    private JWTTokenManagerInterface $jwtManager;
 
     public function __construct(
         Responder $responder,
         RequestStack $requestStack,
-        ManagerRegistry $managerRegistry,
-        TokenStorageInterface $tokenStorage,
-        JWTTokenManagerInterface $jwtManager
+        TokenStorageInterface $tokenStorage
     ) {
         $this->responder        = $responder;
-        $this->jwtManager       = $jwtManager;
         $this->tokenStorage     = $tokenStorage;
         $this->requestStack     = $requestStack;
-        $this->managerRegistry  = $managerRegistry;
+    }
+
+    /**
+     * Provide http methods
+     *
+     * @return Generator
+     */
+    public function httpMethodProvider(): Generator
+    {
+        yield Request::METHOD_GET;
+        yield Request::METHOD_PUT;
+        yield Request::METHOD_DELETE;
     }
 
     public function onKernelRequest(RequestEvent $event): void
     {
-        $message    = null;
-        $status     = null;
-        $jwtToken   = $this->tokenStorage->getToken();
-        $route      = $this->requestStack->getMainRequest()->attributes->get('_route');
-        $requestUri = $event->getRequest()->server->get('REQUEST_URI');
+        $options = [
+            'token' => $this->tokenStorage->getToken(),
+            'route' => $this->requestStack->getMainRequest()->attributes->get('_route'),
+            'event' => $event,
+        ];
 
-        if (null != $jwtToken && $route === 'api_products_get_item') {
-            $productId = (int)preg_replace('/\/api\/products\//', '', $event->getRequest()->getRequestUri());
-
-            /** @var Product $product */
-            $product = $this->managerRegistry->getRepository(Product::class)->find($productId);
-
-            $userId       = $this->jwtManager->decode($this->tokenStorage->getToken())['id'];
-            $ownerId      = $product->getOwner()->getId();
-
-            if ($userId !== $ownerId) {
-                $message = 'Requested ressource is not your own.';
-                $status  = 401;
-            }
-        }
-
-        if ($status !== null) {
-            $event->setResponse($this->responder->getErrorJsonResponse($message, $status));
+        /** @var string httpMethod */
+        foreach ($this->httpMethodProvider() as $httpMethod) {
+            $this->responder->setUnauthorizedItemCategory(ShoppingList::class, $httpMethod, $options);
+            $this->responder->setUnauthorizedItemCategory(ItemList::class, $httpMethod, $options);
+            $this->responder->setUnauthorizedItemCategory(Product::class, $httpMethod, $options);
         }
     }
 

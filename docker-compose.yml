@@ -31,6 +31,22 @@ services:
             - php-net
             - data-net
 
+    # web_register:
+    #     container_name: register-nginx
+    #     build:
+    #         context: ./apps/nginx
+    #         dockerfile: Dockerfile
+    #     volumes:
+    #         - ./apps/nginx/default.conf:/etc/nginx/conf.d/default.conf
+    #         - ./apps/user-manager-api:/var/www
+    #     ports:
+    #         - 8500:80
+    #     restart: always
+    #     depends_on:
+    #         - php
+    #     networks:
+    #         - php-net
+
     dbpostgres:
         container_name: shopping-list-postgres
         build:
@@ -49,34 +65,34 @@ services:
             - data-net
         
 
-    pgadmin:
-        container_name: shopping-list-pgadmin
-        build:
-            context: ./apps/database/pgadmin
-            dockerfile: Dockerfile
-        volumes:
-            - pgadmin_data:/var/lib/pgadmin
-        links:
-            - "dbpostgres:pgsql-server"
-        environment:
-            PGADMIN_DEFAULT_EMAIL: user@shoppinglist.com
-            PGADMIN_DEFAULT_PASSWORD: pass
-            PGADMIN_LISTEN_PORT: 80
-        restart: always
-        ports:
-            - "8132:80"
-        tty: true
+    # pgadmin:
+    #     container_name: shopping-list-pgadmin
+    #     build:
+    #         context: ./apps/database/pgadmin
+    #         dockerfile: Dockerfile
+    #     volumes:
+    #         - pgadmin_data:/var/lib/pgadmin
+    #     links:
+    #         - "dbpostgres:pgsql-server"
+    #     environment:
+    #         PGADMIN_DEFAULT_EMAIL: user@shoppinglist.com
+    #         PGADMIN_DEFAULT_PASSWORD: pass
+    #         PGADMIN_LISTEN_PORT: 80
+    #     restart: always
+    #     ports:
+    #         - "8132:80"
+    #     tty: true
 
-    front:
-      container_name: shopping-list-front
-      build:
-        context: apps/front
-        dockerfile: Dockerfile
-      volumes:
-        - './apps/front:/usr/src/app:rw'
-      ports:
-        - '3000:3000'
-      restart: unless-stopped
+    # front:
+    #   container_name: shopping-list-front
+    #   build:
+    #     context: apps/front
+    #     dockerfile: Dockerfile
+    #   volumes:
+    #     - './apps/front:/usr/src/app:rw'
+    #   ports:
+    #     - '3000:3000'
+    #   restart: unless-stopped
 
 
 networks:
@@ -85,4 +101,4 @@ networks:
 
 volumes:
     pg_data:
-    pgadmin_data:
+#   pgadmin_data:
