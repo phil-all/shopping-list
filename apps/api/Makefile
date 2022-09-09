@@ -15,51 +15,24 @@ SYMFONY     = bin/console
 GIT			= git
 PHPUNIT		= bin/phpunit
 
-
-## —— Docker 🐳 ————————————————————————————————————————————————————————————————
-build: ## Builds the Docker images
-	@$(DOCKER_COMP) build --pull --no-cache
-
-up: ## Start the docker hub in detached mode (no logs)
-	@$(DOCKER_COMP) up --detach
-
-down: ## Stop the docker hub
-	@$(DOCKER_COMP) down --remove-orphans
-
-rm:	down ## Remove the docker hub
-	$(DOCKER_COMP) rm -f
-
-start: build up ## Build and start the containers
-
-restart: rm start	## Restart the docker hub
-
-logs: ## Show live logs
-	@$(DOCKER_COMP) logs --tail=0 --follow
-
-bash: ## Connect to the PHP FPM container
-	@$(DOCKER) exec -it $(PHP_DOCKERIZED) bash
-
-pgsql: ## Connect to database in postgres container
-	@$(DOCKER) exec -it $(DB_DOCKERIZED) psql -U $(DATABASE_USER) $(DATABASE_NAME)
-
-status: ## Docker hub status
-	@docker-compose ps
+# Variables
+SYSTEM_USER    = 1000
 
 
 ## —— Composer 🧙 ——————————————————————————————————————————————————————————————
-update: ## Update composer packages (twice to fix a doctrine deprecation)
+update:
 	@$(COMPOSER) update
 
-dump: ## dump autoloading
+dump:
 	@$(COMPOSER) dump-autoload
 
 dump-opt: ## Optimize autoloading
 	@$(COMPOSER) dump-autoload --optimize
 
-no-lock: ## Remove composer lock
+no-lock:
 	rm -rf composer.lock
 
-no-vendor: ## Remove vendor
+no-vendor:
 	rm -rf vendor
 
 install-vendor: no-vendor no-lock ## Remove and reinstall vendor
@@ -76,17 +49,26 @@ sf: ## List all Symfony commands or pass the parameter "c=" to run a given comma
 cc: c=c:c ## Clear the cache
 cc: sf
 
-user: c=make:user ## Make user
+user: c=make:user ## Create Symfony user
 user: sf
 
-entity: c=m:e ## Make entity
+entity: c=m:e ## Create Symfony entity
 entity: sf
 
-migration: c=make:migration ## Make migrations
+migration: c=make:migration ## Create Symfony migrations
 migration: sf
 
 router: c=debug:router ## Display routing
 router: sf
+
+entity: ## Create Symfony entity
+	@$(SYMFONY) make:entity
+
+test: ## Create Symfony test
+	@$(SYMFONY) make:test
+
+fixtures: ## Create Symfony fixtures
+	@$(SYMFONY) make:fixtures
 
 
 ## —— Grumphp 😡 ———————————————————————————————————————————————————————————————
@@ -115,34 +97,35 @@ migrate-test: sf
 
 
 ## —— Fixtures 🤡 ——————————————————————————————————————————————————————————————
-load: c=doctrine:fixtures:load -n ## Load fixtures
+load: c=doctrine:fixtures:load -n
 load: sf
 
-set-db: ## Reset database and seed with fixtures
+set-db:
 	make drop && make create && make migrate && make load
 
-load-test: c=doctrine:fixtures:load -n  --env=test## Load test fixtures
+load-test: c=doctrine:fixtures:load -n  --env=test
 load-test: sf
 
-set-db-test: ## Reset test database and seed with fixtures
+set-db-test:
 	make drop-test && make create-test && make migrate-test && make load-test
 
-db:
+db:  ## Reset databases (dev and test) and load fixtures
 	make set-db && make set-db-test
 
 
-## —— Git 🔀 ———————————————————————————————————————————————————————————————————
-reset: ## Reset last commit on local
-	@$(GIT) reset --soft HEAD^
-
-
 ## —— Tests ✅ —————————————————————————————————————————————————————————————————
-phpunit: ## Run all phpunit tests
-	@$(eval c ?=)
-	@$(PHPUNIT) $(c)
-
-unit: c=tests/Unit/ --testdox ## Run unit tests only
-unit: phpunit
+unit: ## Run unit tests only
+	@$(PHPUNIT) tests/Unit/ --testdox
 
 endpoint: ## Run end points tests only
 	newman run ./postman/test-API-collection.json -e ./postman/env-local.json
+
+
+## —— permissions 🛂 ———————————————————————————————————————————————————————————
+chown:
+	cd .. && chown -R $(SYSTEM_USER) www && cd www
+
+chgrp:
+	cd .. && chgrp -R $(SYSTEM_USER) www && cd www
+
+perm: chown chgrp ## change api owner and group
