@@ -59,9 +59,9 @@ class RequestSubscriber implements EventSubscriberInterface
 
         /** @var string httpMethod */
         foreach ($this->httpMethodProvider() as $httpMethod) {
-            $this->responder->setUnauthorizedItemCategory(ShoppingList::class, $httpMethod, $options);
-            $this->responder->setUnauthorizedItemCategory(ItemList::class, $httpMethod, $options);
-            $this->responder->setUnauthorizedItemCategory(Product::class, $httpMethod, $options);
+            $this->responder->setUnauthorizedItemOperationsResponse(ShoppingList::class, $httpMethod, $options);
+            $this->responder->setUnauthorizedItemOperationsResponse(ItemList::class, $httpMethod, $options);
+            $this->responder->setUnauthorizedItemOperationsResponse(Product::class, $httpMethod, $options);
         }
     }
 

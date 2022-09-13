@@ -6,7 +6,9 @@ use Doctrine\ORM\Mapping as ORM;
 use App\Repository\ProductRepository;
 use ApiPlatform\Core\Annotation\ApiFilter;
 use App\Controller\CreateProductController;
+use Doctrine\Common\Collections\Collection;
 use ApiPlatform\Core\Annotation\ApiResource;
+use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
 
@@ -44,6 +46,14 @@ class Product
     #[ORM\JoinColumn(nullable: false)]
     #[Groups(['product_read', 'product_write', 'itemList_read'])]
     private ?Department $department = null;
+
+    #[ORM\OneToMany(mappedBy: 'product', targetEntity: ItemList::class, orphanRemoval: true)]
+    private Collection $itemLists;
+
+    public function __construct()
+    {
+        $this->itemLists = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {

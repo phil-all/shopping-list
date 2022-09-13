@@ -2,10 +2,13 @@
 
 namespace App\Service\Responder;
 
+use App\Entity\Product;
 use App\Service\JWT\TokenInspector;
 use Doctrine\Persistence\ManagerRegistry;
+use App\Exception\RessourceNotFoundException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Serializer\NameConverter\CamelCaseToSnakeCaseNameConverter;
 
 /**
@@ -35,17 +38,28 @@ class Responder
      *
      * @return void
      */
-    public function setUnauthorizedItemCategory(string $class, string $httpMethod, array $options): void
+    public function setUnauthorizedItemOperationsResponse(string $class, string $httpMethod, array $options): void
     {
         // Route from class name resolution and method(e.g. api_products_get_item)
-        $itemCategoryRoute = $this->getItemCategoryRoute($this->getRessourceName($class), $httpMethod);
+        $itemCategoryRoute = $this->getItemOperationsRoute($this->getRessourceName($class), $httpMethod);
+
+        /** @var RequestEvent $event */
+        $event = $options['event'];
 
         if (null != $options['token'] && $options['route'] === $itemCategoryRoute) {
+            if (null === $this->getRessource($class, $event)) {
+                $event->setResponse($this->getErrorJsonResponse(
+                    'Ressource not found.',
+                    404
+                ));
+                return;
+            }
+
             $userId  = $this->tokenInspector->getUserIdFromToken($options['token']);
-            $ownerId = $this->getRessource($class, $options['event'])->getOwner()->getId();
+            $ownerId = $this->getRessource($class, $event)->getOwner()->getId();
 
             if ($userId !== $ownerId) {
-                $options['event']->setResponse($this->getErrorJsonResponse(
+                $event->setResponse($this->getErrorJsonResponse(
                     'Requested ressource is not your own.',
                     401
                 ));
@@ -72,7 +86,7 @@ class Responder
     }
 
     /**
-     * Get an entity (ressource object) from class n ame resolution and request event
+     * Get a ressource entity from class name resolution and request event
      *
      * @param string       $class is class name resolution (e.g. Product::class)
      * @param RequestEvent $event
@@ -104,14 +118,15 @@ class Responder
     }
 
     /**
-     * Get a route from class name resolution, http method and operation category
+     * Get a route from class name resolution and http method
+     * for item operation category
      *
      * @param string $class is class name resolution (e.g. Product::class)
      * @param string $httpMethod (e.g. Request::METHOD_GET)
      *
      * @return string
      */
-    private function getItemCategoryRoute(string $class, string $httpMethod): string
+    private function getItemOperationsRoute(string $class, string $httpMethod): string
     {
         return 'api_' . $class . '_' . strtolower($httpMethod) . '_item';
     }
