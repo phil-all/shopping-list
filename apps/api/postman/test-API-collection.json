@@ -1607,6 +1607,53 @@
 			"response": []
 		},
 		{
+			"name": "- product creation for item list test -",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.environment.set(\"lastProductid\", pm.response.json()['id']);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token_user1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"navets\",\n    \"department\": \"{{url}}api/departments/1\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}api/products",
+					"host": [
+						"{{url}}api"
+					],
+					"path": [
+						"products"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "unauthenticated user should not create an item list",
 			"event": [
 				{
@@ -1629,7 +1676,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n  \"quantity\": 2,\n  \"shoppingList\": \"/api/shopping_lists/1\",\n  \"product\": \"/api/products/8\"\n}",
+					"raw": "{\n  \"quantity\": 2,\n  \"shoppingList\": \"/api/shopping_lists/1\",\n  \"product\": \"/api/products/{{lastProductid}}\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -1649,7 +1696,7 @@
 			"response": []
 		},
 		{
-			"name": "user 1 should create an item list",
+			"name": "user 1 should create a new item list",
 			"event": [
 				{
 					"listen": "test",
@@ -1680,7 +1727,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n  \"quantity\": 2,\n  \"shoppingList\": \"/api/shopping_lists/1\",\n  \"product\": \"/api/products/8\"\n}",
+					"raw": "{\n  \"quantity\": 2,\n  \"shoppingList\": \"/api/shopping_lists/1\",\n  \"product\": \"/api/products/{{lastProductid}}\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -2081,6 +2128,235 @@
 						}
 					}
 				},
+				"url": {
+					"raw": "{{url}}api/item_lists/{{lastItemid}}",
+					"host": [
+						"{{url}}api"
+					],
+					"path": [
+						"item_lists",
+						"{{lastItemid}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "- item list creation for product delete on cascade test -",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.environment.set(\"lastItemid\", pm.response.json()['id']);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token_user1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"quantity\": 2,\n  \"shoppingList\": \"/api/shopping_lists/1\",\n  \"product\": \"/api/products/{{lastProductid}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}api/item_lists",
+					"host": [
+						"{{url}}api"
+					],
+					"path": [
+						"item_lists"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "user 1  should delete last created product store in item list",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status test\", function() {",
+							"    pm.response.to.have.status(204)",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token_user1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}api/products/{{lastProductid}}",
+					"host": [
+						"{{url}}api"
+					],
+					"path": [
+						"products",
+						"{{lastProductid}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET response should be 404 on item list from deleted product",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status test\", function() {",
+							"    pm.response.to.have.status(404)",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token_user1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}api/item_lists/{{lastItemid}}",
+					"host": [
+						"{{url}}api"
+					],
+					"path": [
+						"item_lists",
+						"{{lastItemid}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "PUT response should be 404 on item list from deleted product",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status test\", function() {",
+							"    pm.response.to.have.status(404)",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token_user1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"quantity\": 8\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}api/item_lists/{{lastItemid}}",
+					"host": [
+						"{{url}}api"
+					],
+					"path": [
+						"item_lists",
+						"{{lastItemid}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DELETE response should be 404 on item list from deleted product",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status test\", function() {",
+							"    pm.response.to.have.status(404)",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token_user1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
 				"url": {
 					"raw": "{{url}}api/item_lists/{{lastItemid}}",
 					"host": [
