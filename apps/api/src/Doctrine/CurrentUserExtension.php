@@ -4,7 +4,9 @@ namespace App\Doctrine;
 
 use App\Entity\User;
 use App\Entity\Product;
+use App\Entity\ItemList;
 use App\Entity\Department;
+use App\Entity\ShoppingList;
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Component\Security\Core\Security;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Util\QueryNameGeneratorInterface;
@@ -47,7 +49,14 @@ final class CurrentUserExtension implements QueryCollectionExtensionInterface, Q
     {
         $tempUser = $this->security->getUser();
 
-        if ((Product::class !== $resourceClass && Department::class !== $resourceClass) || null === $tempUser) {
+        $protectedRessources = [
+            Product::class,
+            ItemList::class,
+            Department::class,
+            ShoppingList::class,
+        ];
+
+        if (!in_array($resourceClass, $protectedRessources) || null === $tempUser) {
             return;
         }
 

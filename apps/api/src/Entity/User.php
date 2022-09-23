@@ -36,10 +36,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'owner', targetEntity: Department::class)]
     private Collection $departments;
 
+    #[ORM\OneToMany(mappedBy: 'owner', targetEntity: ShoppingList::class, orphanRemoval: true)]
+    private Collection $shoppingLists;
+
     public function __construct()
     {
         $this->product = new ArrayCollection();
         $this->departments = new ArrayCollection();
+        $this->shoppingLists = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -166,6 +170,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             // set the owning side to null (unless already changed)
             if ($department->getOwner() === $this) {
                 $department->setOwner(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ShoppingList>
+     */
+    public function getShoppingLists(): Collection
+    {
+        return $this->shoppingLists;
+    }
+
+    public function addShoppingList(ShoppingList $shoppingList): self
+    {
+        if (!$this->shoppingLists->contains($shoppingList)) {
+            $this->shoppingLists->add($shoppingList);
+            $shoppingList->setOwner($this);
+        }
+
+        return $this;
+    }
+
+    public function removeShoppingList(ShoppingList $shoppingList): self
+    {
+        if ($this->shoppingLists->removeElement($shoppingList)) {
+            // set the owning side to null (unless already changed)
+            if ($shoppingList->getOwner() === $this) {
+                $shoppingList->setOwner(null);
             }
         }
 

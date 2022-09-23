@@ -8,6 +8,10 @@ use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
+/**
+ * RouteListener
+ * @package App\EventListener
+ */
 class RouteListener implements EventSubscriberInterface
 {
     private Responder $responder;

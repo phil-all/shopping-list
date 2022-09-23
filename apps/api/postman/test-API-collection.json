@@ -48,7 +48,7 @@
 			"response": []
 		},
 		{
-			"name": "shold generate token for user 2",
+			"name": "should generate token for user 2",
 			"event": [
 				{
 					"listen": "test",
@@ -420,7 +420,7 @@
 					"script": {
 						"exec": [
 							"pm.test(\"Status test\", function() {",
-							"    pm.response.to.have.status(404);",
+							"    pm.response.to.have.status(401);",
 							"});"
 						],
 						"type": "text/javascript"
@@ -463,6 +463,49 @@
 			"response": []
 		},
 		{
+			"name": "unauthenticated user should not update specific product",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status test\", function() {",
+							"    pm.response.to.have.status(401);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"poivron\",\n    \"department\": \"{{url}}api/departments/2\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}api/products/{{lastProductid}}",
+					"host": [
+						"{{url}}api"
+					],
+					"path": [
+						"products",
+						"{{lastProductid}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "user 2 should not remove user 1 product",
 			"event": [
 				{
@@ -470,7 +513,7 @@
 					"script": {
 						"exec": [
 							"pm.test(\"Status test\", function() {",
-							"    pm.response.to.have.status(404);",
+							"    pm.response.to.have.status(401);",
 							"});"
 						],
 						"type": "text/javascript"
@@ -562,6 +605,15 @@
 			"request": {
 				"method": "POST",
 				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
 				"url": {
 					"raw": "{{url}}api/products",
 					"host": [
@@ -636,7 +688,7 @@
 			"response": []
 		},
 		{
-			"name": "unauthenticated user should not read specific product",
+			"name": "unauthenticated user should not update specific product",
 			"event": [
 				{
 					"listen": "test",
@@ -655,7 +707,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"name\": \"radis\"\n}",
+					"raw": "{\n    \"name\": \"poivron\",\n    \"department\": \"{{url}}api/departments/2\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -1122,6 +1174,1231 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "user 1 should create a shopping list",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.environment.set(\"lastShoppingListid\", pm.response.json()['id']);",
+							"",
+							"pm.test(\"Status test\", function() {",
+							"    pm.response.to.have.status(201);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token_user1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"a new shopping list\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}api/shopping_lists",
+					"host": [
+						"{{url}}api"
+					],
+					"path": [
+						"shopping_lists"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "authenticated user should read shopping lists",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status test\", function() {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token_user1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}api/shopping_lists",
+					"host": [
+						"{{url}}api"
+					],
+					"path": [
+						"shopping_lists"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "user 1 should read own specific shopping lists",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status test\", function() {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Update Name\", function(){",
+							"    pm.expect(pm.response.json()['name']).to.eql(\"a new shopping list\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token_user1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}api/shopping_lists/{{lastShoppingListid}}",
+					"host": [
+						"{{url}}api"
+					],
+					"path": [
+						"shopping_lists",
+						"{{lastShoppingListid}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "user 2 should not read user 1 specific shopping list",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status test\", function() {",
+							"    pm.response.to.have.status(401)",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token_user2}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}api/shopping_lists/{{lastShoppingListid}}",
+					"host": [
+						"{{url}}api"
+					],
+					"path": [
+						"shopping_lists",
+						"{{lastShoppingListid}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "user 1 should update own shopping list",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status test\", function() {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Update Name\", function(){",
+							"    pm.expect(pm.response.json()['name']).to.eql(\"an other name\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token_user1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"an other name\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}api/shopping_lists/{{lastShoppingListid}}",
+					"host": [
+						"{{url}}api"
+					],
+					"path": [
+						"shopping_lists",
+						"{{lastShoppingListid}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "user 2 should not  update user 1 shopping list",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status test\", function() {",
+							"    pm.response.to.have.status(401);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token_user2}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"an other name\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}api/shopping_lists/{{lastShoppingListid}}",
+					"host": [
+						"{{url}}api"
+					],
+					"path": [
+						"shopping_lists",
+						"{{lastShoppingListid}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "unauthenticated user should not  update shopping list",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status test\", function() {",
+							"    pm.response.to.have.status(401);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token_user2}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"an other name\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}api/shopping_lists/{{lastShoppingListid}}",
+					"host": [
+						"{{url}}api"
+					],
+					"path": [
+						"shopping_lists",
+						"{{lastShoppingListid}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "user 2 should not  delete user 1 shopping list",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status test\", function() {",
+							"    pm.response.to.have.status(401);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token_user2}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}api/shopping_lists/{{lastShoppingListid}}",
+					"host": [
+						"{{url}}api"
+					],
+					"path": [
+						"shopping_lists",
+						"{{lastShoppingListid}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "user 1 should delete own shopping list",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status test\", function() {",
+							"    pm.response.to.have.status(204);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token_user1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}api/shopping_lists/{{lastShoppingListid}}",
+					"host": [
+						"{{url}}api"
+					],
+					"path": [
+						"shopping_lists",
+						"{{lastShoppingListid}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "- product creation for item list test -",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.environment.set(\"lastProductid\", pm.response.json()['id']);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token_user1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"navets\",\n    \"department\": \"{{url}}api/departments/1\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}api/products",
+					"host": [
+						"{{url}}api"
+					],
+					"path": [
+						"products"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "unauthenticated user should not create an item list",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status test\", function() {",
+							"    pm.response.to.have.status(401)",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"quantity\": 2,\n  \"shoppingList\": \"/api/shopping_lists/1\",\n  \"product\": \"/api/products/{{lastProductid}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}api/item_lists",
+					"host": [
+						"{{url}}api"
+					],
+					"path": [
+						"item_lists"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "user 1 should create a new item list",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.environment.set(\"lastItemid\", pm.response.json()['id']);",
+							"",
+							"pm.test(\"Status test\", function() {",
+							"    pm.response.to.have.status(201);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token_user1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"quantity\": 2,\n  \"shoppingList\": \"/api/shopping_lists/1\",\n  \"product\": \"/api/products/{{lastProductid}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}api/item_lists",
+					"host": [
+						"{{url}}api"
+					],
+					"path": [
+						"item_lists"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "unauthenticated user should not read item list",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status test\", function() {",
+							"    pm.response.to.have.status(401)",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}api/item_lists",
+					"host": [
+						"{{url}}api"
+					],
+					"path": [
+						"item_lists"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "authneticated user should read item list",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status test\", function() {",
+							"    pm.response.to.have.status(200)",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token_user1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}api/item_lists",
+					"host": [
+						"{{url}}api"
+					],
+					"path": [
+						"item_lists"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "user 1  should read own item list",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status test\", function() {",
+							"    pm.response.to.have.status(200)",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token_user1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}api/item_lists/{{lastItemid}}",
+					"host": [
+						"{{url}}api"
+					],
+					"path": [
+						"item_lists",
+						"{{lastItemid}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "user 2  should not read user 1 item list",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status test\", function() {",
+							"    pm.response.to.have.status(401)",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token_user2}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}api/item_lists/{{lastItemid}}",
+					"host": [
+						"{{url}}api"
+					],
+					"path": [
+						"item_lists",
+						"{{lastItemid}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "user 1  should update own specific item list",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status test\", function() {",
+							"    pm.response.to.have.status(200)",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token_user1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"quantity\": 8\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}api/item_lists/{{lastItemid}}",
+					"host": [
+						"{{url}}api"
+					],
+					"path": [
+						"item_lists",
+						"{{lastItemid}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "user 2 should not update user 1 specific item list",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status test\", function() {",
+							"    pm.response.to.have.status(401)",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token_user2}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"quantity\": 8\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}api/item_lists/{{lastItemid}}",
+					"host": [
+						"{{url}}api"
+					],
+					"path": [
+						"item_lists",
+						"{{lastItemid}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "unauthenticated user should not update specific item list",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status test\", function() {",
+							"    pm.response.to.have.status(401)",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"quantity\": 8\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}api/item_lists/{{lastItemid}}",
+					"host": [
+						"{{url}}api"
+					],
+					"path": [
+						"item_lists",
+						"{{lastItemid}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "user 2 should not update user 1 specific item list Copy",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status test\", function() {",
+							"    pm.response.to.have.status(401)",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token_user2}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}api/item_lists/{{lastItemid}}",
+					"host": [
+						"{{url}}api"
+					],
+					"path": [
+						"item_lists",
+						"{{lastItemid}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "user 1  should delete own specific item list",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status test\", function() {",
+							"    pm.response.to.have.status(204)",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token_user1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}api/item_lists/{{lastItemid}}",
+					"host": [
+						"{{url}}api"
+					],
+					"path": [
+						"item_lists",
+						"{{lastItemid}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "- item list creation for product delete on cascade test -",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.environment.set(\"lastItemid\", pm.response.json()['id']);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token_user1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"quantity\": 2,\n  \"shoppingList\": \"/api/shopping_lists/1\",\n  \"product\": \"/api/products/{{lastProductid}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}api/item_lists",
+					"host": [
+						"{{url}}api"
+					],
+					"path": [
+						"item_lists"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "user 1  should delete last created product store in item list",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status test\", function() {",
+							"    pm.response.to.have.status(204)",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token_user1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}api/products/{{lastProductid}}",
+					"host": [
+						"{{url}}api"
+					],
+					"path": [
+						"products",
+						"{{lastProductid}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET response should be 404 on item list from deleted product",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status test\", function() {",
+							"    pm.response.to.have.status(404)",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token_user1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}api/item_lists/{{lastItemid}}",
+					"host": [
+						"{{url}}api"
+					],
+					"path": [
+						"item_lists",
+						"{{lastItemid}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "PUT response should be 404 on item list from deleted product",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status test\", function() {",
+							"    pm.response.to.have.status(404)",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token_user1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"quantity\": 8\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}api/item_lists/{{lastItemid}}",
+					"host": [
+						"{{url}}api"
+					],
+					"path": [
+						"item_lists",
+						"{{lastItemid}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DELETE response should be 404 on item list from deleted product",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status test\", function() {",
+							"    pm.response.to.have.status(404)",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token_user1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{url}}api/item_lists/{{lastItemid}}",
+					"host": [
+						"{{url}}api"
+					],
+					"path": [
+						"item_lists",
+						"{{lastItemid}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "bearer"
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"value": "",
+			"type": "string",
+			"disabled": true
 		}
 	]
 }
