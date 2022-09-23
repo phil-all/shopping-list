@@ -28,6 +28,8 @@
 
 6.  [:sparkles: Features](#sparkles:Features)
 
+7.  [:clapper: Demonstration video](#clapper:Demonstrationvideo)
+
 * * *
 
 ## <a name='tada:Gettingstarted'></a>1. :tada: Getting started
@@ -41,6 +43,9 @@ To be installed, and used, this project requires:
 -   npm
 -   yarn
 -   docker-compose
+
+If you don't have npm and yarn installed, you can use docker front container.
+To do this, uncomment lines 51 to 60 in `docker-compose.yml`.
 
 ### <a name='GlobalArhitecture'></a>1.2. Global Arhitecture
 
@@ -59,7 +64,11 @@ git clone git@gitlab.com:phil-all/boilerplate-symfonyreact.git <your_project_nam
 Launch docker root project:
 
 ```bash
-docker-compose build && docker-compose up -d
+# from root directory
+make start
+
+# is equivalent to:
+# docker-compose build && docker-compose up -d
 ```
 
 #### <a name='SymfonyAPI'></a>1.3.2. Symfony API
@@ -82,7 +91,9 @@ Generate SSL keys for JWT authentication:
 php bin/console lexik:jwt:generate-keypair
 ```
 
-Create a .env.local file, and move in **JWT_PASSPHRASE** from .env file:
+Your keys will land in `./apps/api/config/jwt/private.pem` and `./apps/api/config/jwt/public.pem`.
+
+Create a `.env.local file`, and move in **JWT_PASSPHRASE** from `.env file`.
 
 ##### API endpoints
 
@@ -93,22 +104,18 @@ Create a .env.local file, and move in **JWT_PASSPHRASE** from .env file:
 
 #### <a name='Reactforntapp'></a>1.3.3. React fornt app
 
-Lauch node server :
+Launch node server on `127.0.0.1:3000` :
 
 ```bash
 # from root directory
 make front
 ```
 
+If you use front container, you won't have to execute the make command. Node server will be ready on the 3000 port.
+
 #### <a name='Database'></a>1.3.4. Database
 
-Database port is 5432.
-
-Pgadmin is accessible from 127.0.0.1:8732
-
-| user | user mail       | password |
-| ---- | --------------- | -------- |
-| user | user@boiler.com | pass     |
+Database postgres port is 5432.
 
 * * *
 
@@ -119,33 +126,12 @@ Pgadmin is accessible from 127.0.0.1:8732
 #### <a name='APISymfony'></a>2.1.1. API Symfony
 
 **Developpement**
-Set your own variables in a .env.local file, it would override .env file if needed.
+Set your own variables in a `.env.local` file, it would override .env file if needed.
 
 A makefile is provide
 
 **Test**
-As for env.local, copy your JWT_PASSPHRASE in env.test.local
-
-**Datas transaction and rollback in phpunit tests**
-To ensure each test to be isolated regarding database actions, and be performed as many times as necessary, without other test side effect, be sure dama/doctrine-test-bundle is well configured.
-
-```yaml
-# ./config/packages/test/dama_doctrine_test
-dama_doctrine_test:
-    enable_static_connection: true
-    enable_static_meta_data_cache: true
-    enable_static_query_cache: true
-```
-
-```xml
-<!-- ./phpunit.xml.dist -->
-
-...
-    <extensions>
-        <extension class="DAMA\DoctrineTestBundle\PHPUnit\PHPUnitExtension" />
-    </extensions>
-</phpunit>
-```
+As for env.local, copy your JWT_PASSPHRASE in `env.test.local`.
 
 #### <a name='Demousers'></a>2.1.2. Demo users
 
@@ -277,5 +263,8 @@ perm                           change api owner and group
 | login                 | :heavy_check_mark: |
 | products              | :heavy_check_mark: |
 | departments           | :heavy_check_mark: |
-| shopping list         |                    |
-| search                |                    |
+| shopping list         | :heavy_check_mark: |
+
+## <a name='clapper:Demonstrationvideo'></a>7. :clapper: Demonstration video
+
+Comming soon...
