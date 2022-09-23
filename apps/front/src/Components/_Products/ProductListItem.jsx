@@ -1,28 +1,20 @@
 import React from 'react';
 import { FaTrashAlt } from 'react-icons/fa';
-
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-// import { faQuestion, faCarrot, faBottleWater, faCheeseSwiss, faSandwich, faToiletPaper } from'@fortawesome/free-solid-svg-icons';
-
-const ProductListItem = ({ product, handleDelete, departments }) => {
-  //alert(Object.keys(departments).map((key) => {return departments[key]}));
-  //alert(departments);
-
-  const departmentId = product.department.replace('/api/departments/', '');
-
+const ProductListItem = ({ product, handleDelete }) => {
   return (
-    <li className="product list-group-item">
+    <li className="list list-group-item">
       <article className='row'>
         <div className='col-1'>
           <div style={{
             width: '24px',
-            backgroundColor: departments[departmentId - 1].color,
+            backgroundColor: product.department.color,
             color: 'black',
             textAlign: 'center',
             borderRadius: '50%'
           }}>
-            <FontAwesomeIcon icon={departments[departmentId - 1].icon} />
+            <FontAwesomeIcon icon={product.department.icon} />
           </div>
         </div>
         <label className='col-8 col-sm-9 ps-3'>

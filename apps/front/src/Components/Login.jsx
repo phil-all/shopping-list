@@ -1,4 +1,4 @@
-import axios from '../Services/axios';
+import axios from '../Services/Http/axios';
 import { useNavigate } from 'react-router-dom';
 import { FaRegUserCircle } from 'react-icons/fa';
 import { CookiesProvider, useCookies } from 'react-cookie';
@@ -6,6 +6,9 @@ import { React, useRef, useState, useEffect } from 'react';
 
 const LOGIN_URL = '/api/login_check';
 
+/**
+ * Login component
+ */
 const Login = () => {
   const userRef = useRef();
 
@@ -41,7 +44,6 @@ const Login = () => {
       setUsername('');
       setPassword('');
       navigateHome();
-      console.log(response.data);
     } catch (err) {
       setErrMsg('Identifiants invalides');
       if (!err?.response) setErrMsg('Server muet');
@@ -58,9 +60,9 @@ const Login = () => {
               className='p-3 mt-3'
             >
               <h1 className='text-primary m-0'>Shopping List</h1>
-              <p 
+              <p
                 className='text-primary text-center mb-5'
-                style={{fontSize: '150px'}}
+                style={{ fontSize: '150px' }}
               >
                 <FaRegUserCircle />
               </p>
@@ -83,8 +85,7 @@ const Login = () => {
                 <input
                   className='form-control text-primary bg-dark'
                   placeholder='Votre mot de passe'
-                  // type='password'
-                  type='text'
+                  type='password'
                   id='password'
                   onChange={(e) => setPassword(e.target.value)}
                   value={password}
@@ -93,7 +94,7 @@ const Login = () => {
                 />
               </div>
               <div className='d-grid mx-auto'>
-                <button 
+                <button
                   className='btn btn-primary mt-5'
                   data-testid='login'
                 >
