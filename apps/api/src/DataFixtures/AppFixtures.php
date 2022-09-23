@@ -5,6 +5,7 @@ namespace App\DataFixtures;
 use App\Entity\User;
 use App\Entity\Product;
 use App\Entity\Department;
+use App\Entity\ShoppingList;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -50,7 +51,7 @@ class AppFixtures extends Fixture
         ];
 
         $products = [
-            0 => 'un truc',
+            0 => 'un produit dont j\'ignore le rayon',
             1 => 'salade',
             2 => 'pate a tarte',
             3 => 'beurre',
@@ -75,13 +76,36 @@ class AppFixtures extends Fixture
 
         for ($i = 0; $i < 2; $i++) {
             $user = new User();
-
             $user
                 ->setEmail($users[$i] . '@example.com')
                 ->setRoles(['ROLE_USER'])
                 ->setPassword($this->hasher->hashPassword($user, 'pass1234'));
-
             $manager->persist($user);
+
+            switch ($i) {
+                case 0:
+                    $listTitle = [
+                        0 => 'barbecue dimanche',
+                        1 => 'carrouf'
+                    ];
+                    for ($k = 0; $k < 2; $k++) {
+                        $shoppingList = new ShoppingList();
+                        $shoppingList
+                            ->setOwner($user)
+                            ->setName($listTitle[$k]);
+                        $manager->persist($shoppingList);
+                        $this->addReference('shoppingList_' . $k, $shoppingList);
+                    }
+                    break;
+                case 1:
+                    $shoppingList = new ShoppingList();
+                    $shoppingList
+                        ->setOwner($user)
+                        ->setName('dépannage supérette');
+                    $manager->persist($shoppingList);
+                    $this->addReference('shoppingList_2', $shoppingList);
+                    break;
+            }
 
             for ($j = 0; $j < count($departments); $j++) {
                 $department = new Department();
@@ -91,7 +115,6 @@ class AppFixtures extends Fixture
                     ->setIcon($departments[$j][1])
                     ->setColor($departments[$j][2])
                     ->setOwner($user);
-
                 $manager->persist($department);
 
                 $product = new Product();
@@ -100,6 +123,7 @@ class AppFixtures extends Fixture
                     ->setDepartment($department)
                     ->setOwner($user);
                 $manager->persist($product);
+                $this->addReference('user' . $i . '_product' . $j, $product);
             }
         }
         $manager->flush();

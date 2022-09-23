@@ -1,12 +1,15 @@
-import axios from '../Services/axios';
 import Header from './_Base/Header';
 import Footer from './_Base/Footer';
 import { useCookies } from "react-cookie";
+import axios from '../Services/Http/axios';
 import { useNavigate } from 'react-router-dom';
 import AddProduct from './_Products/AddProduct';
 import { React, useEffect, useState } from 'react';
 import ProductsContent from './_Products/ProductsContent';
 
+/**
+ * Products manager component.
+ */
 const Products = () => {
   const [cookies] = useCookies();
   const [products, setProducts] = useState([]);
@@ -35,13 +38,16 @@ const Products = () => {
           '/api/products',
           config
         );
-        const listProducts = responseProducts.data;
 
         const responseDepartments = await axios.get(
           '/api/departments',
           config
         );
+
+        const listProducts = responseProducts.data;
         const listDepartments = responseDepartments.data;
+
+        listProducts.sort((a, b) => (a.department.id > b.department.id) ? 1 : -1)
 
         setProducts(listProducts);
         setDepartments(listDepartments);
@@ -52,25 +58,23 @@ const Products = () => {
     (async () => await fetchProducts())();
   }, [])
 
-  const setAndSaveProducts = (newProducts) => {
-    setProducts(newProducts);
-    localStorage.setProduct('shoppinglist', JSON.stringify(newProducts));
+  const setAndSaveProducts = (listProducts) => {
+    setProducts(listProducts);
   }
 
   const addProduct = async (productName, department) => {
     try {
-      console.log('yy');
-      console.log(department.id);
       const postUrl = "/api/departments/" + department.id;
-      console.log(postUrl);
+
       const response = axios.post(
         '/api/products',
         {
-          'name': productName, 
+          'name': productName,
           "department": postUrl
         },
         config
       );
+
       const myNewProduct = (await response).data;
       const listProducts = [...products, myNewProduct];
       setAndSaveProducts(listProducts);
@@ -85,6 +89,7 @@ const Products = () => {
         '/api/products/' + id,
         config
       );
+
       const listProducts = products.filter((product) => product.id !== id);
       setAndSaveProducts(listProducts);
     } catch (err) {
@@ -98,9 +103,8 @@ const Products = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log('toto');
     //if (!newProduct || !newDepartment) return;
-    
+
     addProduct(newProduct, newDepartment);
     setNewProduct('');
   }
@@ -108,24 +112,23 @@ const Products = () => {
   return (
     <main className='d-flex flex-column'>
       <section>
-      <Header title="Mes produits" />
-      <AddProduct
-        newProduct={newProduct}
-        setNewProduct={setNewProduct}
-        handleSubmit={handleSubmit}
-        departments={departments}
-        newDepartment={newDepartment}
-        setNewDepartment={setNewDepartment}
-      />
+        <Header title="Mes produits" />
+        <AddProduct
+          newProduct={newProduct}
+          setNewProduct={setNewProduct}
+          handleSubmit={handleSubmit}
+          departments={departments}
+          newDepartment={newDepartment}
+          setNewDepartment={setNewDepartment}
+        />
       </section>
       <section className='d-flex flex-grow-1'>
-      <div className='container'>
-        <ProductsContent
-          products={products}
-          handleDelete={handleDelete}
-          departments={departments}
-        />
-      </div>
+        <div className='container'>
+          <ProductsContent
+            products={products}
+            handleDelete={handleDelete}
+          />
+        </div>
       </section>
       <Footer />
     </main>

@@ -1,7 +1,7 @@
 import React from 'react';
 import ProductsList from './ProductsList';
 
-const ProductContent = ({ products, handleDelete, departments }) => {
+const ProductContent = ({ products, handleDelete}) => {
   const defaultListDisplay = 'La liste est vide.';
 
   return (
@@ -10,7 +10,6 @@ const ProductContent = ({ products, handleDelete, departments }) => {
         <ProductsList
           products={products}
           handleDelete={handleDelete}
-          departments={departments}
         />
       ) : (
         <p style={{ marginTop: '2rem' }}>{defaultListDisplay}</p>

@@ -9,6 +9,7 @@ use Lexik\Bundle\JWTAuthenticationBundle\Event\JWTCreatedEvent;
 
 /**
  * Add custom datas in JWT payload
+ * @package App\EventListener
  */
 class JWTCreatedListener
 {

@@ -12,12 +12,15 @@ DOCKER      = docker
 DOCKER_COMP = docker-compose
 GIT			= git
 
+# Variables
+PHP_DOCKERIZED = shopping-list-php
+
 
 ## —— Docker 🐳 ————————————————————————————————————————————————————————————————
-build: ## Builds the Docker images
+build:
 	@$(DOCKER_COMP) build --pull --no-cache
 
-up: ## Start the docker hub in detached mode (no logs)
+up:
 	@$(DOCKER_COMP) up --detach
 
 down: ## Stop the docker hub
@@ -26,18 +29,12 @@ down: ## Stop the docker hub
 rm:	down ## Remove the docker hub
 	$(DOCKER_COMP) rm -f
 
-start: build up ## Build and start the containers
+start: build up ## Build and start the containers (no logs)
 
-restart: rm start	## Restart the docker hub
+restart: rm start ## Restart the docker hub
 
 logs: ## Show live logs
 	@$(DOCKER_COMP) logs --tail=0 --follow
-
-bash: ## Connect to the PHP FPM container
-	@$(DOCKER) exec -it $(PHP_DOCKERIZED) bash
-
-pgsql: ## Connect to database in postgres container
-	@$(DOCKER) exec -it $(DB_DOCKERIZED) psql -U $(DATABASE_USER) $(DATABASE_NAME)
 
 status: ## Docker hub status
 	@docker-compose ps
@@ -46,3 +43,14 @@ status: ## Docker hub status
 ## —— Git 🔀 ———————————————————————————————————————————————————————————————————
 reset: ## Reset last commit on local
 	@$(GIT) reset --soft HEAD^
+
+
+## —— Front app 💻 —————————————————————————————————————————————————————————————
+front: ## start front app node server
+	cd apps/front && npm start
+
+api: ## Connect to the api bash
+	@$(DOCKER) exec -it $(PHP_DOCKERIZED) bash
+
+pgsql: ## Connect to postgres bash
+	docker exec -it shopping-list-postgres psql -U 

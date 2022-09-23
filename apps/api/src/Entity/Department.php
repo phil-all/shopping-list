@@ -21,19 +21,19 @@ class Department
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(["department_read"])]
+    #[Groups(["department_read", 'itemList_read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(["department_read"])]
+    #[Groups(["department_read", 'itemList_read'])]
     private ?string $name = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(["department_read"])]
+    #[Groups(["department_read", 'itemList_read'])]
     private ?string $color = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(["department_read"])]
+    #[Groups(["department_read", 'itemList_read'])]
     private ?string $icon = null;
 
     #[ORM\ManyToOne(inversedBy: 'departments')]

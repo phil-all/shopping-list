@@ -1,9 +1,9 @@
 import Login from '../Components/Login';
-import "@testing-library/jest-dom/extend-expect";
+import '@testing-library/jest-dom/extend-expect';
 import {BrowserRouter as Router} from 'react-router-dom';
-import { render, screen, cleanup } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 
-test('should render login component', () => {
+it('should render login component', () => {
   render(
     <Router>
       <Login />,

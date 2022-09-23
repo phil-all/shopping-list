@@ -47,36 +47,17 @@ services:
             - "5432:5432"
         networks:
             - data-net
-        
 
-    pgadmin:
-        container_name: shopping-list-pgadmin
-        build:
-            context: ./apps/database/pgadmin
-            dockerfile: Dockerfile
-        volumes:
-            - pgadmin_data:/var/lib/pgadmin
-        links:
-            - "dbpostgres:pgsql-server"
-        environment:
-            PGADMIN_DEFAULT_EMAIL: user@shoppinglist.com
-            PGADMIN_DEFAULT_PASSWORD: pass
-            PGADMIN_LISTEN_PORT: 80
-        restart: always
-        ports:
-            - "8132:80"
-        tty: true
-
-    front:
-      container_name: shopping-list-front
-      build:
-        context: apps/front
-        dockerfile: Dockerfile
-      volumes:
-        - './apps/front:/usr/src/app:rw'
-      ports:
-        - '3000:3000'
-      restart: unless-stopped
+    # front:
+    #   container_name: shopping-list-front
+    #   build:
+    #     context: apps/front
+    #     dockerfile: Dockerfile
+    #   volumes:
+    #     - './apps/front:/usr/src/app:rw'
+    #   ports:
+    #     - '3000:3000'
+    #   restart: unless-stopped
 
 
 networks:
@@ -85,4 +66,3 @@ networks:
 
 volumes:
     pg_data:
-    pgadmin_data:

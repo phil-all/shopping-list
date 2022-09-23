@@ -4,10 +4,10 @@ import { React, useRef, useState } from 'react';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-const AddProduct = ({ newProduct, setNewProduct, handleSubmit, departments, newDepartment, setNewDepartment }) => {
-  const darkColor = '#222525';
-
+const AddProduct = ({ newProduct, setNewProduct, handleSubmitNewProduct, departments, newDepartment, setNewDepartment }) => {
   const inputRef = useRef();
+  
+  const darkColor = '#222525';
 
   const selectStyle = {
     control: styles => ({ ...styles, backgroundColor: darkColor, borderRadius: '6px'}),
@@ -21,7 +21,10 @@ const AddProduct = ({ newProduct, setNewProduct, handleSubmit, departments, newD
 
   return (
     <div className='bg-primary pb-2'>
-      <form className='row container mx-auto' onSubmit={handleSubmit}>
+      <form
+        className='row container mx-auto'
+        onSubmit={handleSubmitNewProduct}
+      >
         <div className='col-md-6 my-auto'>
           <input
             className='form-control bg-dark text-primary'
